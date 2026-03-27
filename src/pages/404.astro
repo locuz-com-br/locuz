@@ -1,0 +1,42 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import LINKS from '../constants/links';
+---
+
+<BaseLayout title="404 – Page Not Found" hideNavAndFooter={true}>
+  <section class="not-found container">
+    <!--<h1 class="error-code gradient-text">404</h1>-->
+    <h2 data-i18n="not_found.title">Página não encontrada</h2>
+    <p data-i18n="not_found.desc">Desculpe, não conseguimos encontrar a página que você está procurando.</p>
+    <a href={LINKS.pages.home} class="btn btn-primary" data-i18n="not_found.btn">Voltar ao Início</a>
+  </section>
+</BaseLayout>
+
+<style>
+  .not-found {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 1.5rem;
+  }
+  
+  .error-code {
+    font-size: clamp(6rem, 15vw, 10rem);
+    line-height: 1;
+    margin-bottom: -1rem;
+  }
+  
+  .not-found h2 {
+    font-size: clamp(1.5rem, 3vw, 2.5rem);
+  }
+  
+  .not-found p {
+    font-size: 1.125rem;
+    color: var(--color-text-secondary);
+    max-width: 500px;
+    margin-bottom: 0.5rem;
+  }
+</style>

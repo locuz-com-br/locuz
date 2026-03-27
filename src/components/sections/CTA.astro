@@ -1,0 +1,98 @@
+---
+// CTA — Full-width call to action
+import LINKS from '../../constants/links';
+---
+
+<section class="cta-band">
+  <div class="cta-bg">
+    <div class="cta-gradient cta-gradient--1"></div>
+    <div class="cta-gradient cta-gradient--2"></div>
+  </div>
+
+  <div class="cta-content container">
+    <h2 class="cta-title">
+      <span data-i18n="cta.title_1">Pronto para transformar sua</span><br />
+      <span class="gradient-text" data-i18n="cta.title_2">presença digital?</span>
+    </h2>
+    <p class="cta-subtitle" data-i18n="cta.subtitle">
+      Agende uma consultoria de 30 minutos. Vamos analisar sua
+      situação atual e mostrar exatamente como podemos ajudar.
+    </p>
+    <div class="cta-actions">
+      <a href={LINKS.contact.meet} class="btn btn-primary" data-i18n="cta.btn">Agende sua Consultoria</a>
+      <p class="cta-note" data-i18n="cta.note">Sem compromisso · Resposta em até 24h</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta-band {
+    position: relative;
+    padding: var(--section-padding) 0;
+    overflow: hidden;
+    border-top: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .cta-bg {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+  }
+
+  .cta-gradient {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(100px);
+    opacity: 0.2;
+  }
+
+  .cta-gradient--1 {
+    width: 400px;
+    height: 400px;
+    background: var(--blue-locuz);
+    top: -30%;
+    left: 20%;
+  }
+
+  .cta-gradient--2 {
+    width: 350px;
+    height: 350px;
+    background: var(--green-digital);
+    bottom: -30%;
+    right: 20%;
+  }
+
+  .cta-content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+  }
+
+  .cta-title {
+    font-size: clamp(2rem, 4vw, 2.75rem);
+  }
+
+  .cta-subtitle {
+    max-width: 520px;
+    font-size: 1.0625rem;
+    line-height: 1.7;
+  }
+
+  .cta-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+  }
+
+  .cta-note {
+    font-size: 0.8125rem;
+    color: var(--gray-base);
+  }
+</style>

@@ -1,0 +1,248 @@
+---
+// Hero section — full viewport, animated
+import LINKS from '../../constants/links';
+---
+
+<section class="hero" id="inicio">
+  <!-- Background effects -->
+  <div class="hero-bg">
+    <div class="hero-gradient hero-gradient--1"></div>
+    <div class="hero-gradient hero-gradient--2"></div>
+    <div class="hero-grid"></div>
+  </div>
+
+  <div class="hero-content container">
+    <div class="hero-badge animate-fade-in-up">
+      <span class="hero-badge-dot"></span>
+      <span data-i18n="hero.badge">Assessoria de Growth</span>
+    </div>
+
+    <h1 class="hero-title animate-fade-in-up delay-100">
+      <span data-i18n="hero.title_1">Transformamos sua</span><br />
+      <span class="gradient-text" data-i18n="hero.title_2">presença digital</span><br />
+      <span data-i18n="hero.title_3">em resultados reais.</span>
+    </h1>
+
+    <p class="hero-subtitle animate-fade-in-up delay-200" data-i18n="hero.subtitle">
+      Da fundação digital à operação escalável — construímos ecossistemas
+      completos que atraem, convertem e retêm clientes para o seu negócio crescer.
+    </p>
+
+    <div class="hero-actions animate-fade-in-up delay-300">
+      <a href={LINKS.contact.meet} class="btn btn-primary" data-i18n="hero.cta_primary">Agendar Consultoria</a>
+      <a href={LINKS.sections.servicos} class="btn btn-outline" data-i18n="hero.cta_secondary">Nossos Serviços</a>
+    </div>
+
+    <div class="hero-stats animate-fade-in-up delay-500">
+      <div class="hero-stat">
+        <span class="hero-stat-number" data-i18n="hero.stat_1_value">+180%</span>
+        <span class="hero-stat-label" data-i18n="hero.stat_1_label">Crescimento em buscas locais</span>
+      </div>
+      <div class="hero-stat-divider"></div>
+      <div class="hero-stat">
+        <span class="hero-stat-number" data-i18n="hero.stat_2_value">10 dias</span>
+        <span class="hero-stat-label" data-i18n="hero.stat_2_label">Para sua fundação digital</span>
+      </div>
+      <div class="hero-stat-divider"></div>
+      <div class="hero-stat">
+        <span class="hero-stat-number" data-i18n="hero.stat_3_value">24/7</span>
+        <span class="hero-stat-label" data-i18n="hero.stat_3_label">Monitoramento contínuo</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scroll indicator -->
+  <div class="hero-scroll animate-fade-in delay-600">
+    <div class="hero-scroll-line"></div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    padding-top: 5rem;
+  }
+
+  /* Background */
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+  }
+
+  .hero-gradient {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.35;
+  }
+
+  .hero-gradient--1 {
+    width: 600px;
+    height: 600px;
+    background: var(--blue-locuz);
+    top: -15%;
+    right: -10%;
+    animation: pulse-glow 8s ease-in-out infinite;
+  }
+
+  .hero-gradient--2 {
+    width: 400px;
+    height: 400px;
+    background: var(--green-digital);
+    bottom: -10%;
+    left: -5%;
+    animation: pulse-glow 10s ease-in-out infinite 2s;
+  }
+
+  .hero-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--hero-grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--hero-grid-line) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, black 30%, transparent 100%);
+    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, black 30%, transparent 100%);
+  }
+
+  /* Content */
+  .hero-content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.75rem;
+    padding-top: 2rem;
+    padding-bottom: 4rem;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 1rem;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--color-border);
+    background: var(--hero-badge-bg);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--gray-pearl);
+    letter-spacing: 0.02em;
+  }
+
+  .hero-badge-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--green-digital);
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+
+  .hero-title {
+    max-width: 800px;
+    letter-spacing: -0.03em;
+  }
+
+  .hero-subtitle {
+    max-width: 580px;
+    font-size: clamp(1rem, 1.3vw, 1.125rem);
+    color: var(--gray-pearl);
+    line-height: 1.7;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 0.5rem;
+  }
+
+  /* Stats */
+  .hero-stats {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    margin-top: 2rem;
+    padding-top: 2.5rem;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .hero-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .hero-stat-number {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--white-marble);
+  }
+
+  .hero-stat-label {
+    font-size: 0.75rem;
+    color: var(--gray-base);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .hero-stat-divider {
+    width: 1px;
+    height: 2.5rem;
+    background: var(--color-border);
+  }
+
+  /* Scroll indicator */
+  .hero-scroll {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .hero-scroll-line {
+    width: 1px;
+    height: 48px;
+    background: linear-gradient(to bottom, var(--gray-pearl), transparent);
+    animation: float 3s ease-in-out infinite;
+  }
+
+  @media (max-width: 768px) {
+    .hero {
+      padding-top: 6rem;
+    }
+
+    .hero-stats {
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .hero-stat-divider {
+      width: 2.5rem;
+      height: 1px;
+    }
+
+    .hero-gradient--1 {
+      width: 300px;
+      height: 300px;
+    }
+
+    .hero-gradient--2 {
+      width: 200px;
+      height: 200px;
+    }
+  }
+</style>

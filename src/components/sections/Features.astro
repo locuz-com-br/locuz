@@ -1,0 +1,14 @@
+---
+import featuresData from '../../data/features.json';
+---
+
+<section id="features">
+  <ul>
+    {featuresData.map((feature) => (
+      <li>
+        <h3>{feature.title}</h3>
+        <p>{feature.description}</p>
+      </li>
+    ))}
+  </ul>
+</section>

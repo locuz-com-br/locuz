@@ -1,0 +1,67 @@
+---
+interface Props {
+  title: string;
+  description?: string;
+  hideNavAndFooter?: boolean;
+}
+
+const { 
+  title, 
+  description = 'Locuz | Assessoria de Growth especializada em ajudar empresas a alcançar o próximo nível.',
+  hideNavAndFooter = false
+} = Astro.props;
+
+import '../styles/global.css';
+import Navbar from '../components/sections/Navbar.astro';
+import Footer from '../components/sections/Footer.astro';
+---
+
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+
+    <!-- OG / Social -->
+    <meta property="og:title" content={`${title} | Locuz`} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={`${title} | Locuz`} />
+    <meta name="twitter:description" content={description} />
+
+    <!-- Theme -->
+    <meta name="theme-color" content="#FCFCFD" />
+
+    <title>{title} | Locuz</title>
+    <link rel="icon" type="image/svg+xml" href="/images/logo/logo_profile_white.svg" />
+
+    <!-- Preload Critical Fonts -->
+    <link rel="preload" href="/fonts/new-york/NewYorkLarge-Semibold.otf" as="font" type="font/otf" crossorigin />
+    <link rel="preload" href="/fonts/lora/lora-regular.ttf" as="font" type="font/truetype" crossorigin />
+
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <!-- Prevent FOUC: apply saved theme before paint -->
+    <script is:inline>
+      (function() {
+        const saved = localStorage.getItem('locuz-theme');
+        if (saved === 'dark') {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    {!hideNavAndFooter && <Navbar />}
+    <main>
+      <slot />
+    </main>
+    {!hideNavAndFooter && <Footer />}
+    <script src="../scripts/i18n.ts"></script>
+  </body>
+</html>

@@ -1,0 +1,260 @@
+---
+// Services — Three-tier product showcase (i18n-ready)
+import LINKS from '../../constants/links';
+---
+
+<section class="services section" id="servicos">
+  <div class="container">
+    <div class="services-header">
+      <span class="section-label" data-i18n="services.label">Nossos Serviços</span>
+      <h2><span data-i18n="services.title_1">Soluções para cada</span><br /><span class="gradient-text" data-i18n="services.title_2">fase do seu negócio</span></h2>
+      <p class="services-desc" data-i18n="services.desc">
+        Três níveis de solução pensados para atender empresas em diferentes
+        estágios de maturidade digital — da fundação à escala.
+      </p>
+    </div>
+
+    <div class="services-grid">
+      <!-- Tier 1: Fundação -->
+      <div class="service-card glass-card">
+        <div class="service-card-header">
+          <span class="service-card-icon">🔐</span>
+          <span class="service-card-tier" data-i18n="services.t1_tier">Fundação</span>
+          <h3 class="service-card-name" data-i18n="services.t1_name">Infraestrutura Digital</h3>
+          <p class="service-card-desc" data-i18n="services.t1_desc">A base sólida que sua empresa precisa para existir profissionalmente no digital. Domínio, e-mail, segurança e visibilidade no Google.</p>
+        </div>
+        <div class="service-card-meta">
+          <div class="service-card-meta-item">
+            <span class="service-card-meta-label" data-i18n="services.investment">Investimento</span>
+            <span class="service-card-meta-value" data-i18n="services.t1_price">Investimento Acessível</span>
+          </div>
+          <div class="service-card-meta-item">
+            <span class="service-card-meta-label" data-i18n="services.timeline">Prazo</span>
+            <span class="service-card-meta-value" data-i18n="services.t1_timeline">7–10 dias</span>
+          </div>
+        </div>
+        <ul class="service-card-features">
+          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13.333 4L6 11.333 2.667 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="services.t1_f1">Domínio profissional + DNS</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13.333 4L6 11.333 2.667 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="services.t1_f2">E-mail corporativo (5 caixas)</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13.333 4L6 11.333 2.667 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="services.t1_f3">Certificado SSL + Segurança</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13.333 4L6 11.333 2.667 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="services.t1_f4">Backup automático diário</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13.333 4L6 11.333 2.667 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="services.t1_f5">SEO técnico fundamental</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13.333 4L6 11.333 2.667 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="services.t1_f6">Google Meu Negócio otimizado</span></li>
+        </ul>
+        <a href={LINKS.sections.contato} class="btn btn-outline service-card-cta" data-i18n="services.learn_more">Saiba Mais</a>
+      </div>
+
+      <!-- Tier 2: Conversão (highlighted) -->
+      <div class="service-card glass-card service-card--highlighted">
+        <div class="service-card-badge" data-i18n="services.popular">Mais Popular</div>
+        <div class="service-card-header">
+          <span class="service-card-icon">💻</span>
+          <span class="service-card-tier" data-i18n="services.t2_tier">Conversão</span>
+          <h3 class="service-card-name" data-i18n="services.t2_name">Hub de Captação Digital</h3>
+          <p class="service-card-desc" data-i18n="services.t2_desc">Transforme sua presença digital numa máquina de captação. Site/LP profissional, branding e copywriting estratégico que convertem.</p>
+        </div>
+        <div class="service-card-meta">
+          <div class="service-card-meta-item">
+            <span class="service-card-meta-label" data-i18n="services.investment">Investimento</span>
+            <span class="service-card-meta-value" data-i18n="services.t2_price">Melhor Custo-Benefício</span>
+          </div>
+          <div class="service-card-meta-item">
+            <span class="service-card-meta-label" data-i18n="services.timeline">Prazo</span>
+            <span class="service-card-meta-value" data-i18n="services.t2_timeline">6–8 semanas</span>
+          </div>
+        </div>
+        <ul class="service-card-features">
+          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13.333 4L6 11.333 2.667 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="services.t2_f1">Tudo da Fundação Digital +</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13.333 4L6 11.333 2.667 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="services.t2_f2">Identidade visual completa</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13.333 4L6 11.333 2.667 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="services.t2_f3">Site/Landing Page profissional</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13.333 4L6 11.333 2.667 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="services.t2_f4">Copywriting persuasivo</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13.333 4L6 11.333 2.667 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="services.t2_f5">SEO on-page avançado</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13.333 4L6 11.333 2.667 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="services.t2_f6">Analytics e rastreamento</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13.333 4L6 11.333 2.667 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="services.t2_f7">CRO e otimização de conversão</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13.333 4L6 11.333 2.667 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="services.t2_f8">3 meses de suporte ativo</span></li>
+        </ul>
+        <a href={LINKS.sections.contato} class="btn btn-primary service-card-cta" data-i18n="services.learn_more">Saiba Mais</a>
+      </div>
+
+      <!-- Tier 3: Escala -->
+      <div class="service-card glass-card">
+        <div class="service-card-header">
+          <span class="service-card-icon">💎</span>
+          <span class="service-card-tier" data-i18n="services.t3_tier">Escala</span>
+          <h3 class="service-card-name" data-i18n="services.t3_name">Sistema de Alta Performance</h3>
+          <p class="service-card-desc" data-i18n="services.t3_desc">De operação manual para sistema automatizado. CRM próprio, automações inteligentes, dashboards e integrações enterprise.</p>
+        </div>
+        <div class="service-card-meta">
+          <div class="service-card-meta-item">
+            <span class="service-card-meta-label" data-i18n="services.investment">Investimento</span>
+            <span class="service-card-meta-value" data-i18n="services.t3_price">Investimento Estratégico</span>
+          </div>
+          <div class="service-card-meta-item">
+            <span class="service-card-meta-label" data-i18n="services.timeline">Prazo</span>
+            <span class="service-card-meta-value" data-i18n="services.t3_timeline">16 semanas</span>
+          </div>
+        </div>
+        <ul class="service-card-features">
+          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13.333 4L6 11.333 2.667 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="services.t3_f1">Tudo do Hub de Captação +</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13.333 4L6 11.333 2.667 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="services.t3_f2">CRM proprietário customizado</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13.333 4L6 11.333 2.667 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="services.t3_f3">Automações avançadas</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13.333 4L6 11.333 2.667 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="services.t3_f4">Dashboards de BI</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13.333 4L6 11.333 2.667 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="services.t3_f5">Integrações complexas</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13.333 4L6 11.333 2.667 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="services.t3_f6">E-commerce (se aplicável)</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13.333 4L6 11.333 2.667 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="services.t3_f7">Treinamento completo da equipe</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13.333 4L6 11.333 2.667 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="services.t3_f8">6 meses de suporte ativo</span></li>
+        </ul>
+        <a href={LINKS.sections.contato} class="btn btn-outline service-card-cta" data-i18n="services.learn_more">Saiba Mais</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .services-header {
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto 4rem;
+  }
+
+  .services-desc {
+    margin-top: 1rem;
+  }
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    align-items: stretch;
+  }
+
+  .service-card {
+    position: relative;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .service-card--highlighted {
+    border-color: rgba(54, 162, 172, 0.3);
+    background: var(--card-highlighted-bg);
+    transform: scale(1.02);
+  }
+
+  .service-card--highlighted:hover {
+    border-color: rgba(54, 162, 172, 0.5);
+    box-shadow: 0 8px 48px rgba(54, 162, 172, 0.08);
+  }
+
+  .service-card-badge {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 0.25rem 1rem;
+    border-radius: var(--radius-full);
+    background: var(--green-digital);
+    color: var(--black-locuz);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+  }
+
+  .service-card-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .service-card-icon {
+    font-size: 2rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .service-card-tier {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--green-digital);
+  }
+
+  .service-card-name {
+    font-size: 1.375rem;
+  }
+
+  .service-card-desc {
+    font-size: 0.9375rem;
+    color: var(--gray-pearl);
+    line-height: 1.6;
+  }
+
+  .service-card-meta {
+    display: flex;
+    gap: 1.5rem;
+    padding: 1rem;
+    border-radius: var(--radius-md);
+    background: var(--card-meta-bg);
+  }
+
+  .service-card-meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+  }
+
+  .service-card-meta-label {
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--gray-base);
+  }
+
+  .service-card-meta-value {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--white-marble);
+  }
+
+  .service-card-features {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+    flex-grow: 1;
+  }
+
+  .service-card-features li {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    font-size: 0.875rem;
+    color: var(--gray-pearl);
+  }
+
+  .service-card-features svg {
+    flex-shrink: 0;
+    color: var(--green-digital);
+  }
+
+  .service-card-cta {
+    width: 100%;
+    margin-top: auto;
+  }
+
+  @media (max-width: 1024px) {
+    .services-grid {
+      grid-template-columns: 1fr;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    .service-card--highlighted {
+      transform: scale(1);
+    }
+  }
+</style>

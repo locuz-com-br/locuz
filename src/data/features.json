@@ -1,0 +1,14 @@
+[
+  {
+    "title": "Blazing Fast",
+    "description": "Ships zero JS by default — only what you opt into."
+  },
+  {
+    "title": "Island Architecture",
+    "description": "Hydrate only the interactive components you need."
+  },
+  {
+    "title": "Content Collections",
+    "description": "Type-safe MDX with Zod schema validation out of the box."
+  }
+]

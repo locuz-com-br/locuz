@@ -1,0 +1,66 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const pages = await getCollection('pages');
+  return pages.map((page) => ({
+    params: { slug: page.id },
+    props: { page },
+  }));
+}
+
+const { page } = Astro.props;
+const { Content } = await render(page);
+---
+
+<BaseLayout title={page.data.title}>
+  <article class="page-content container">
+    <Content />
+  </article>
+</BaseLayout>
+
+<style>
+  .page-content {
+    padding-top: 8rem;
+    padding-bottom: 4rem;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  :global(.page-content h1) {
+    font-size: clamp(2rem, 4vw, 3rem);
+    margin-bottom: 0.5rem;
+    color: var(--blue-locuz);
+  }
+  
+  :global(.page-content p:first-of-type) {
+    font-size: 1.125rem;
+    color: var(--gray-base);
+    margin-bottom: 3rem;
+  }
+  
+  :global(.page-content h2) {
+    font-size: 1.5rem;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--color-text);
+  }
+  
+  :global(.page-content p) {
+    margin-bottom: 1.25rem;
+    line-height: 1.7;
+    color: var(--color-text-secondary);
+  }
+  
+  :global(.page-content ul) {
+    margin-bottom: 1.25rem;
+    padding-left: 1.5rem;
+    color: var(--color-text-secondary);
+  }
+  
+  :global(.page-content li) {
+    margin-bottom: 0.5rem;
+    line-height: 1.6;
+  }
+</style>

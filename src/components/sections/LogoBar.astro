@@ -1,0 +1,81 @@
+---
+// LogoBar — infinite marquee of capability/partner icons
+const capabilities = [
+  'Google Ads', 'Meta Ads', 'SEO', 'Google Analytics',
+  'WordPress', 'Webflow', 'HubSpot', 'Cloudflare',
+  'Figma', 'Stripe', 'Google Workspace', 'Mailchimp'
+];
+---
+
+<section class="logo-bar">
+  <div class="container">
+    <p class="logo-bar-label">Ferramentas e Plataformas que Utilizamos</p>
+  </div>
+  <div class="marquee-wrapper">
+    <div class="marquee-track">
+      {[...capabilities, ...capabilities].map((name) => (
+        <div class="marquee-item">
+          <span class="marquee-icon">◆</span>
+          <span>{name}</span>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .logo-bar {
+    padding: 3rem 0;
+    border-top: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
+    background: var(--gray-graphene);
+    overflow: hidden;
+  }
+
+  .logo-bar-label {
+    text-align: center;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--gray-base);
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+  }
+
+  .marquee-wrapper {
+    overflow: hidden;
+    width: 100%;
+  }
+
+  .marquee-track {
+    display: flex;
+    gap: 3rem;
+    width: max-content;
+    animation: marquee 40s linear infinite;
+  }
+
+  .marquee-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    white-space: nowrap;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--gray-pearl);
+    opacity: 0.6;
+    transition: opacity var(--transition-fast);
+  }
+
+  .marquee-item:hover {
+    opacity: 1;
+  }
+
+  .marquee-icon {
+    font-size: 0.5rem;
+    color: var(--green-digital);
+  }
+
+  .marquee-wrapper:hover .marquee-track {
+    animation-play-state: paused;
+  }
+</style>

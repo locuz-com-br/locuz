@@ -1,0 +1,209 @@
+---
+import Image from "astro/components/Image.astro";
+
+// Testimonials — Social proof (i18n-ready)
+---
+
+<section class="testimonials section" id="depoimentos">
+  <div class="container">
+    <div class="testimonials-header">
+      <span class="section-label" data-i18n="testimonials.label">Depoimentos</span>
+      <h2><span data-i18n="testimonials.title_1">O que nossos</span><br /><span class="gradient-text" data-i18n="testimonials.title_2">clientes dizem</span></h2>
+    </div>
+
+    <div class="testimonials-scroll">
+      <div class="testimonials-track">
+        <div class="testimonial-card glass-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <blockquote class="testimonial-quote" data-i18n="testimonials.t1_quote">"Antes da Locuz, nosso negócio era invisível no Google. Em 60 dias, já estávamos recebendo contatos qualificados direto pelo Maps. O investimento se pagou no primeiro mês."</blockquote>
+          <div class="testimonial-author">
+            <!--
+            <div class="testimonial-avatar">M</div>
+            -->
+            <Image src="https://images.unsplash.com/photo-1742321694004-7f3f5e2447f4" alt="Marcos Silva" width={40} height={40} class="testimonial-photo" />
+            <div class="testimonial-info">
+              <span class="testimonial-name" data-i18n="testimonials.t1_name">Marcos Silva</span>
+              <span class="testimonial-role" data-i18n="testimonials.t1_role">Diretor Comercial | Empresa de Engenharia</span>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card glass-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <blockquote class="testimonial-quote" data-i18n="testimonials.t2_quote">"A equipe não entregou apenas um site, entregou uma máquina de gerar leads. Nossa taxa de conversão saltou de 0,5% para 3,2% nos primeiros 90 dias."</blockquote>
+          <div class="testimonial-author">
+            <Image src="https://images.unsplash.com/photo-1755717074331-e3cb2cbebb4f" alt="Camila Ferreira" width={40} height={40} class="testimonial-photo" />
+            <div class="testimonial-info">
+              <span class="testimonial-name" data-i18n="testimonials.t2_name">Camila Ferreira</span>
+              <span class="testimonial-role" data-i18n="testimonials.t2_role">CEO | Consultoria Financeira</span>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card glass-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <blockquote class="testimonial-quote" data-i18n="testimonials.t3_quote">"Finalmente temos profissionalismo digital. O e-mail corporativo e a presença no Google mudaram completamente como nossos clientes nos enxergam."</blockquote>
+          <div class="testimonial-author">
+            <Image src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7" alt="Eduardo Santos" width={40} height={40} class="testimonial-photo" />
+            <div class="testimonial-info">
+              <span class="testimonial-name" data-i18n="testimonials.t3_name">Eduardo Santos</span>
+              <span class="testimonial-role" data-i18n="testimonials.t3_role">Fundador | Escritório de Advocacia</span>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card glass-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <blockquote class="testimonial-quote" data-i18n="testimonials.t4_quote">"O CRM customizado transformou nossa operação comercial. Saímos de planilhas para um sistema completo que nos permitiu escalar 3x sem contratar mais vendedores."</blockquote>
+          <div class="testimonial-author">
+            <Image src="https://images.unsplash.com/photo-1758691737587-7630b4d31d16" alt="Ana Beatriz Gomes" width={40} height={40} class="testimonial-photo" />
+            <div class="testimonial-info">
+              <span class="testimonial-name" data-i18n="testimonials.t4_name">Ana Beatriz Gomes</span>
+              <span class="testimonial-role" data-i18n="testimonials.t4_role">COO | Startup de Tecnologia</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .testimonials-header {
+    text-align: center;
+    max-width: 500px;
+    margin: 0 auto 3.5rem;
+  }
+
+  .testimonials-scroll {
+    overflow: hidden;
+    margin: 0 calc(-1 * var(--container-padding));
+    padding: 0 var(--container-padding);
+  }
+
+  .testimonials-track {
+    display: flex;
+    gap: 1.25rem;
+    width: max-content;
+    padding-bottom: 0.5rem;
+    will-change: transform;
+  }
+
+  .testimonial-card {
+    width: 360px;
+    flex-shrink: 0;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .testimonial-stars {
+    color: var(--yellow-buzz);
+    font-size: 0.875rem;
+    letter-spacing: 0.1em;
+  }
+
+  .testimonial-quote {
+    font-family: var(--font-subtitle);
+    font-style: italic;
+    font-size: 0.9375rem;
+    line-height: 1.7;
+    color: var(--gray-platinum);
+    flex-grow: 1;
+  }
+
+  .testimonial-author {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .testimonial-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--testimonial-avatar-bg);
+    color: var(--green-digital);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.875rem;
+    flex-shrink: 0;
+  }
+
+  .testimonial-photo {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-position: top;
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+
+  .testimonial-info {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .testimonial-name {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--white-marble);
+  }
+
+  .testimonial-role {
+    font-size: 0.75rem;
+    color: var(--gray-base);
+  }
+
+  @media (max-width: 480px) {
+    .testimonial-card {
+      width: 300px;
+    }
+  }
+</style>
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  const initTestimonialsScroll = () => {
+    const section = document.querySelector('.testimonials.section') as HTMLElement;
+    const track = document.querySelector('.testimonials-track') as HTMLElement;
+    const wrapper = document.querySelector('.testimonials-scroll') as HTMLElement;
+
+    if (!section || !track || !wrapper) return;
+
+    // Reset practically any prior GSAP transformations to calculate properly
+    gsap.set(track, { clearProps: "all" });
+
+    const getScrollAmount = () => track.scrollWidth - wrapper.clientWidth;
+
+    // Only apply if the track content is wider than the viewport
+    if (getScrollAmount() > 0) {
+      const tween = gsap.to(track, {
+        x: () => -getScrollAmount(),
+        ease: "none"
+      });
+
+      ScrollTrigger.create({
+        trigger: section,
+        start: "center center", // Pins the section when it reaches the center of the screen
+        end: () => `+=${getScrollAmount()}`, 
+        pin: true,
+        animation: tween,
+        scrub: 1, // Smooth scrolling effect
+        invalidateOnRefresh: true, // Recalculate on window resize
+      });
+    }
+  };
+
+  // Run automatically
+  initTestimonialsScroll();
+  
+  // Astro View Transitions integration if used
+  document.addEventListener('astro:page-load', initTestimonialsScroll);
+</script>

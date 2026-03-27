@@ -1,0 +1,294 @@
+{
+  "nav": {
+    "inicio": { "pt": "Início", "en": "Home" },
+    "servicos": { "pt": "Serviços", "en": "Services" },
+    "proposito": { "pt": "Propósito", "en": "Purpose" },
+    "processo": { "pt": "Processo", "en": "Process" },
+    "resultados": { "pt": "Resultados", "en": "Results" },
+    "contato": { "pt": "Contato", "en": "Contact" },
+    "cta": { "pt": "Fale Conosco", "en": "Get in Touch" }
+  },
+
+  "hero": {
+    "badge": { "pt": "Assessoria de Growth", "en": "Growth Consulting" },
+    "title_1": { "pt": "Transformamos sua", "en": "We transform your" },
+    "title_2": { "pt": "presença digital", "en": "digital presence" },
+    "title_3": { "pt": "em resultados reais.", "en": "into real results." },
+    "subtitle": {
+      "pt": "Da fundação digital à operação escalável — construímos ecossistemas completos que atraem, convertem e retêm clientes para o seu negócio crescer.",
+      "en": "From digital foundation to scalable operations — we build complete ecosystems that attract, convert, and retain customers to grow your business."
+    },
+    "cta_primary": { "pt": "Agendar Consultoria", "en": "Book a Consultation" },
+    "cta_secondary": { "pt": "Nossos Serviços", "en": "Our Services" },
+    "stat_1_value": { "pt": "+180%", "en": "+180%" },
+    "stat_1_label": { "pt": "Crescimento em buscas locais", "en": "Growth in local searches" },
+    "stat_2_value": { "pt": "10 dias", "en": "10 days" },
+    "stat_2_label": { "pt": "Para sua fundação digital", "en": "For your digital foundation" },
+    "stat_3_value": { "pt": "24/7", "en": "24/7" },
+    "stat_3_label": { "pt": "Monitoramento contínuo", "en": "Continuous monitoring" }
+  },
+
+  "logobar": {
+    "label": { "pt": "Ferramentas e Plataformas que Utilizamos", "en": "Tools and Platforms We Use" }
+  },
+
+  "services": {
+    "label": { "pt": "Nossos Serviços", "en": "Our Services" },
+    "title_1": { "pt": "Soluções para cada", "en": "Solutions for every" },
+    "title_2": { "pt": "fase do seu negócio", "en": "stage of your business" },
+    "desc": {
+      "pt": "Três níveis de solução pensados para atender empresas em diferentes estágios de maturidade digital — da fundação à escala.",
+      "en": "Three solution tiers designed for companies at different stages of digital maturity — from foundation to scale."
+    },
+    "popular": { "pt": "Mais Popular", "en": "Most Popular" },
+    "investment": { "pt": "Investimento", "en": "Investment" },
+    "timeline": { "pt": "Prazo", "en": "Timeline" },
+    "learn_more": { "pt": "Saiba Mais", "en": "Learn More" },
+
+    "t1_tier": { "pt": "Fundação", "en": "Foundation" },
+    "t1_name": { "pt": "Infraestrutura Digital", "en": "Digital Infrastructure" },
+    "t1_desc": {
+      "pt": "A base sólida que sua empresa precisa para existir profissionalmente no digital. Domínio, e-mail, segurança e visibilidade no Google.",
+      "en": "The solid foundation your business needs to exist professionally in the digital world. Domain, email, security, and Google visibility."
+    },
+    "t1_price": { "pt": "Investimento Acessível", "en": "Accessible Investment" },
+    "t1_timeline": { "pt": "7–10 dias", "en": "7–10 days" },
+    "t1_f1": { "pt": "Domínio profissional + DNS", "en": "Professional domain + DNS" },
+    "t1_f2": { "pt": "E-mail corporativo (5 caixas)", "en": "Corporate email (5 mailboxes)" },
+    "t1_f3": { "pt": "Certificado SSL + Segurança", "en": "SSL Certificate + Security" },
+    "t1_f4": { "pt": "Backup automático diário", "en": "Daily automatic backup" },
+    "t1_f5": { "pt": "SEO técnico fundamental", "en": "Essential technical SEO" },
+    "t1_f6": { "pt": "Google Meu Negócio otimizado", "en": "Optimized Google My Business" },
+
+    "t2_tier": { "pt": "Conversão", "en": "Conversion" },
+    "t2_name": { "pt": "Hub de Captação Digital", "en": "Digital Lead Hub" },
+    "t2_desc": {
+      "pt": "Transforme sua presença digital numa máquina de captação. Site/LP profissional, branding e copywriting estratégico que convertem.",
+      "en": "Turn your digital presence into a lead generation machine. Professional site/LP, branding, and strategic copywriting that converts."
+    },
+    "t2_price": { "pt": "Melhor Custo-Benefício", "en": "Best Value" },
+    "t2_timeline": { "pt": "6–8 semanas", "en": "6–8 weeks" },
+    "t2_f1": { "pt": "Tudo da Fundação Digital +", "en": "Everything from Foundation +" },
+    "t2_f2": { "pt": "Identidade visual completa", "en": "Complete visual identity" },
+    "t2_f3": { "pt": "Site/Landing Page profissional", "en": "Professional Site/Landing Page" },
+    "t2_f4": { "pt": "Copywriting persuasivo", "en": "Persuasive copywriting" },
+    "t2_f5": { "pt": "SEO on-page avançado", "en": "Advanced on-page SEO" },
+    "t2_f6": { "pt": "Analytics e rastreamento", "en": "Analytics and tracking" },
+    "t2_f7": { "pt": "CRO e otimização de conversão", "en": "CRO and conversion optimization" },
+    "t2_f8": { "pt": "3 meses de suporte ativo", "en": "3 months of active support" },
+
+    "t3_tier": { "pt": "Escala", "en": "Scale" },
+    "t3_name": { "pt": "Sistema de Alta Performance", "en": "High Performance System" },
+    "t3_desc": {
+      "pt": "De operação manual para sistema automatizado. CRM próprio, automações inteligentes, dashboards e integrações enterprise.",
+      "en": "From manual operations to automated systems. Custom CRM, smart automations, dashboards, and enterprise integrations."
+    },
+    "t3_price": { "pt": "Investimento Estratégico", "en": "Strategic Investment" },
+    "t3_timeline": { "pt": "16 semanas", "en": "16 weeks" },
+    "t3_f1": { "pt": "Tudo do Hub de Captação +", "en": "Everything from Lead Hub +" },
+    "t3_f2": { "pt": "CRM proprietário customizado", "en": "Custom proprietary CRM" },
+    "t3_f3": { "pt": "Automações avançadas", "en": "Advanced automations" },
+    "t3_f4": { "pt": "Dashboards de BI", "en": "BI Dashboards" },
+    "t3_f5": { "pt": "Integrações complexas", "en": "Complex integrations" },
+    "t3_f6": { "pt": "E-commerce (se aplicável)", "en": "E-commerce (if applicable)" },
+    "t3_f7": { "pt": "Treinamento completo da equipe", "en": "Complete team training" },
+    "t3_f8": { "pt": "6 meses de suporte ativo", "en": "6 months of active support" }
+  },
+
+  "why": {
+    "label": { "pt": "Por Que a Locuz", "en": "Why Locuz" },
+    "title_1": { "pt": "A diferença entre", "en": "The difference between" },
+    "title_2": { "pt": "existir e performar", "en": "existing and performing" },
+    "desc": {
+      "pt": "97% dos consumidores pesquisam online antes de comprar. Se você não está posicionado profissionalmente, está perdendo vendas todos os dias.",
+      "en": "97% of consumers search online before buying. If you're not professionally positioned, you're losing sales every day."
+    },
+    "v1_title": { "pt": "Estratégia Completa", "en": "Complete Strategy" },
+    "v1_desc": {
+      "pt": "Não entregamos peças isoladas. Criamos um ecossistema digital integrado onde cada elemento trabalha para gerar resultado.",
+      "en": "We don't deliver isolated pieces. We create an integrated digital ecosystem where every element works to generate results."
+    },
+    "v2_title": { "pt": "Entrega Ágil", "en": "Agile Delivery" },
+    "v2_desc": {
+      "pt": "Processos otimizados que entregam fundações digitais em 10 dias e ecossistemas completos em 6-8 semanas.",
+      "en": "Optimized processes that deliver digital foundations in 10 days and complete ecosystems in 6-8 weeks."
+    },
+    "v3_title": { "pt": "Resultado Mensurável", "en": "Measurable Results" },
+    "v3_desc": {
+      "pt": "Cada ação é rastreada e cada investimento é justificado por dados. Relatórios claros para decisões data-driven.",
+      "en": "Every action is tracked and every investment is justified by data. Clear reports for data-driven decisions."
+    },
+    "v4_title": { "pt": "Segurança Blindada", "en": "Bulletproof Security" },
+    "v4_desc": {
+      "pt": "Backups diários, monitoramento 24/7, certificados SSL e proteção contra ameaças. Sua operação nunca para.",
+      "en": "Daily backups, 24/7 monitoring, SSL certificates, and threat protection. Your operation never stops."
+    },
+    "v5_title": { "pt": "Parceria de Longo Prazo", "en": "Long-Term Partnership" },
+    "v5_desc": {
+      "pt": "Não somos fornecedores pontuais. Crescemos junto com seu negócio, evoluindo soluções conforme você escala.",
+      "en": "We're not one-time vendors. We grow alongside your business, evolving solutions as you scale."
+    },
+    "v6_title": { "pt": "Escalabilidade", "en": "Scalability" },
+    "v6_desc": {
+      "pt": "Soluções que crescem com você. Da fundação digital à operação enterprise com CRM, automações e dashboards de BI.",
+      "en": "Solutions that grow with you. From digital foundation to enterprise operations with CRM, automations, and BI dashboards."
+    }
+  },
+
+  "process": {
+    "label": { "pt": "Como Funciona", "en": "How It Works" },
+    "title_1": { "pt": "Um processo", "en": "A process that is" },
+    "title_2": { "pt": "claro e eficiente", "en": "clear and efficient" },
+    "desc": {
+      "pt": "Metodologia testada e refinada em dezenas de projetos. Transparência total do início ao resultado.",
+      "en": "Methodology tested and refined across dozens of projects. Total transparency from start to result."
+    },
+    "s1_title": { "pt": "Diagnóstico", "en": "Diagnosis" },
+    "s1_desc": {
+      "pt": "Imersão completa no seu negócio. Mapeamos processos, analisamos concorrentes, identificamos oportunidades e definimos objetivos claros.",
+      "en": "Complete immersion in your business. We map processes, analyze competitors, identify opportunities, and define clear goals."
+    },
+    "s1_detail": { "pt": "Reunião de kickoff + pesquisa aprofundada", "en": "Kickoff meeting + in-depth research" },
+    "s2_title": { "pt": "Estratégia", "en": "Strategy" },
+    "s2_desc": {
+      "pt": "Criamos o plano de ação baseado em dados. Arquitetura de informação, wireframes, fluxos de conversão e cronograma detalhado.",
+      "en": "We create a data-driven action plan. Information architecture, wireframes, conversion flows, and a detailed timeline."
+    },
+    "s2_detail": { "pt": "Planejamento estratégico + wireframes", "en": "Strategic planning + wireframes" },
+    "s3_title": { "pt": "Criação", "en": "Creation" },
+    "s3_desc": {
+      "pt": "Design UI/UX, desenvolvimento, copywriting e branding. Cada elemento é estrategicamente posicionado para guiar seu cliente até a ação.",
+      "en": "UI/UX design, development, copywriting, and branding. Every element is strategically positioned to guide your customer to action."
+    },
+    "s3_detail": { "pt": "Design + Desenvolvimento + Conteúdo", "en": "Design + Development + Content" },
+    "s4_title": { "pt": "Implementação", "en": "Implementation" },
+    "s4_desc": {
+      "pt": "Integrações, analytics, SEO técnico, testes de qualidade e otimização de performance. Nada vai ao ar sem aprovação.",
+      "en": "Integrations, analytics, technical SEO, quality testing, and performance optimization. Nothing goes live without approval."
+    },
+    "s4_detail": { "pt": "Testes + Integrações + Go-live", "en": "Testing + Integrations + Go-live" },
+    "s5_title": { "pt": "Crescimento", "en": "Growth" },
+    "s5_desc": {
+      "pt": "Monitoramento contínuo, relatórios mensais, otimizações baseadas em dados reais e suporte ativo para escalar seus resultados.",
+      "en": "Continuous monitoring, monthly reports, optimizations based on real data, and active support to scale your results."
+    },
+    "s5_detail": { "pt": "Monitoramento + Otimização contínua", "en": "Monitoring + Continuous optimization" }
+  },
+
+  "results": {
+    "label": { "pt": "Resultados", "en": "Results" },
+    "title_1": { "pt": "Números que", "en": "Numbers that" },
+    "title_2": { "pt": "falam por si", "en": "speak for themselves" },
+    "stat_1_value": { "pt": "+180%", "en": "+180%" },
+    "stat_1_label": { "pt": "Crescimento médio em buscas locais nos primeiros 60 dias", "en": "Average growth in local searches in the first 60 days" },
+    "stat_2_value": { "pt": "+100", "en": "+100" },
+    "stat_2_label": { "pt": "Empresas impactadas através da gestão de processos de Growth e UX/UI Design", "en": "Companies impacted through Growth and UX/UI Design process management" },
+    "stat_3_value": { "pt": "<3s", "en": "<3s" },
+    "stat_3_label": { "pt": "Tempo de carregamento otimizado dos nossos sites", "en": "Optimized load time of our websites" },
+    "stat_4_value": { "pt": "24/7", "en": "24/7" },
+    "stat_4_label": { "pt": "Monitoramento contínuo e backups automáticos", "en": "Continuous monitoring and automatic backups" },
+    "highlight_title": {
+      "pt": "Cada dia sem estar bem posicionado é uma oportunidade perdida.",
+      "en": "Every day without being well-positioned is a missed opportunity."
+    },
+    "highlight_desc": {
+      "pt": "Enquanto você espera, seus concorrentes estão capturando os clientes que procuram exatamente o que você oferece. A questão não é SE você precisa de presença digital profissional — mas QUANDO vai parar de perder dinheiro.",
+      "en": "While you wait, your competitors are capturing clients searching for exactly what you offer. The question isn't IF you need a professional digital presence — but WHEN you'll stop losing money."
+    },
+    "highlight_cta": { "pt": "Pare de Perder Clientes", "en": "Stop Losing Clients" }
+  },
+
+  "testimonials": {
+    "label": { "pt": "Depoimentos", "en": "Testimonials" },
+    "title_1": { "pt": "O que nossos", "en": "What our" },
+    "title_2": { "pt": "clientes dizem", "en": "clients say" },
+    "t1_quote": {
+      "pt": "Antes da Locuz, nosso negócio era invisível no Google. Em 60 dias, já estávamos recebendo contatos qualificados direto pelo Maps. O investimento se pagou no primeiro mês.",
+      "en": "Before Locuz, our business was invisible on Google. In 60 days, we were already receiving qualified leads directly through Maps. The investment paid for itself in the first month."
+    },
+    "t1_name": { "pt": "Marcos Silva", "en": "Marcos Silva" },
+    "t1_role": { "pt": "Diretor Comercial | Empresa de Engenharia", "en": "Sales Director | Engineering Company" },
+    "t2_quote": {
+      "pt": "A equipe não entregou apenas um site, entregou uma máquina de gerar leads. Nossa taxa de conversão saltou de 0,5% para 3,2% nos primeiros 90 dias.",
+      "en": "The team didn't just deliver a website, they delivered a lead generation machine. Our conversion rate jumped from 0.5% to 3.2% in the first 90 days."
+    },
+    "t2_name": { "pt": "Camila Ferreira", "en": "Camila Ferreira" },
+    "t2_role": { "pt": "CEO | Consultoria Financeira", "en": "CEO | Financial Consulting" },
+    "t3_quote": {
+      "pt": "Finalmente temos profissionalismo digital. O e-mail corporativo e a presença no Google mudaram completamente como nossos clientes nos enxergam.",
+      "en": "We finally have digital professionalism. Corporate email and Google presence completely changed how our clients perceive us."
+    },
+    "t3_name": { "pt": "Eduardo Santos", "en": "Eduardo Santos" },
+    "t3_role": { "pt": "Fundador | Escritório de Advocacia", "en": "Founder | Law Firm" },
+    "t4_quote": {
+      "pt": "O CRM customizado transformou nossa operação comercial. Saímos de planilhas para um sistema completo que nos permitiu escalar 3x sem contratar mais vendedores.",
+      "en": "The custom CRM transformed our sales operations. We went from spreadsheets to a complete system that allowed us to scale 3x without hiring more salespeople."
+    },
+    "t4_name": { "pt": "Ana Beatriz Gomes", "en": "Ana Beatriz Gomes" },
+    "t4_role": { "pt": "COO | Startup de Tecnologia", "en": "COO | Tech Startup" }
+  },
+
+  "cta": {
+    "title_1": { "pt": "Pronto para transformar sua", "en": "Ready to transform your" },
+    "title_2": { "pt": "presença digital?", "en": "digital presence?" },
+    "subtitle": {
+      "pt": "Agende uma consultoria de 30 minutos. Vamos analisar sua situação atual e mostrar exatamente como podemos ajudar.",
+      "en": "Schedule a 30-minute consultation. We'll analyze your current situation and show you exactly how we can help."
+    },
+    "btn": { "pt": "Agende sua Consultoria", "en": "Schedule Your Consultation" },
+    "note": { "pt": "Sem compromisso · Resposta em até 24h", "en": "No commitment · Response within 24h" }
+  },
+
+  "contact": {
+    "label": { "pt": "Contato", "en": "Contact" },
+    "title_1": { "pt": "Vamos conversar", "en": "Let's talk" },
+    "title_2": { "pt": "sobre seu projeto", "en": "about your project" },
+    "desc": {
+      "pt": "Agende uma consultoria de 30 minutos. Analisaremos sua situação atual e mostraremos exatamente como podemos ajudar seu negócio a crescer no digital.",
+      "en": "Schedule a 30-minute consultation. We'll analyze your current situation and show you exactly how we can help your business grow digitally."
+    },
+    "email_label": { "pt": "E-mail", "en": "Email" },
+    "whatsapp_label": { "pt": "WhatsApp", "en": "WhatsApp" },
+    "hours_label": { "pt": "Atendimento", "en": "Hours" },
+    "hours_value": { "pt": "24h/dia, 7 dias/semana", "en": "24h/day, 7 days/week" },
+    "form_name": { "pt": "Nome *", "en": "Name *" },
+    "form_name_placeholder": { "pt": "Seu nome completo", "en": "Your full name" },
+    "form_email": { "pt": "E-mail *", "en": "Email *" },
+    "form_email_placeholder": { "pt": "seu@email.com", "en": "your@email.com" },
+    "form_phone": { "pt": "Telefone", "en": "Phone" },
+    "form_phone_placeholder": { "pt": "(11) 99999-9999", "en": "+1 (555) 000-0000" },
+    "form_company": { "pt": "Empresa", "en": "Company" },
+    "form_company_placeholder": { "pt": "Nome da empresa", "en": "Company name" },
+    "form_message": { "pt": "Mensagem *", "en": "Message *" },
+    "form_message_placeholder": { "pt": "Conte-nos sobre seu projeto e objetivos...", "en": "Tell us about your project and goals..." },
+    "form_submit": { "pt": "Enviar Mensagem →", "en": "Send Message →" },
+    "form_sending": { "pt": "Enviando...", "en": "Sending..." },
+    "form_success": { "pt": "✓ Mensagem enviada com sucesso! Retornaremos em até 24h.", "en": "✓ Message sent successfully! We'll respond within 24h." },
+    "form_error": { "pt": "Algo deu errado. Por favor, tente novamente.", "en": "Something went wrong. Please try again." }
+  },
+
+  "footer": {
+    "tagline": { "pt": "Transformamos presença digital em resultados tangíveis.", "en": "We transform digital presence into tangible results." },
+    "col_services": { "pt": "Serviços", "en": "Services" },
+    "col_company": { "pt": "Empresa", "en": "Company" },
+    "col_resources": { "pt": "Recursos", "en": "Resources" },
+    "link_foundation": { "pt": "Fundação Digital", "en": "Digital Foundation" },
+    "link_hub": { "pt": "Hub de Captação", "en": "Lead Hub" },
+    "link_scale": { "pt": "Sistema de Escala", "en": "Scale System" },
+    "link_about": { "pt": "Sobre Nós", "en": "About Us" },
+    "link_process": { "pt": "Processo", "en": "Process" },
+    "link_results": { "pt": "Resultados", "en": "Results" },
+    "link_contact": { "pt": "Contato", "en": "Contact" },
+    "link_blog": { "pt": "Blog", "en": "Blog" },
+    "link_terms": { "pt": "Termos de Uso", "en": "Terms of Use" },
+    "link_privacy": { "pt": "Política de Privacidade", "en": "Privacy Policy" },
+    "link_cookies": { "pt": "Política de Cookies", "en": "Cookie Policy" },
+    "copyright": { "pt": "Todos os direitos reservados.", "en": "All rights reserved." }
+  },
+
+  "not_found": {
+    "title": { "pt": "Página não encontrada", "en": "Page not found" },
+    "desc": { "pt": "Desculpe, não conseguimos encontrar a página que você está procurando.", "en": "Sorry, we couldn't find the page you're looking for." },
+    "btn": { "pt": "Voltar ao Início", "en": "Go to Home" }
+  }
+}

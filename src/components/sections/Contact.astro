@@ -1,0 +1,143 @@
+---
+import ContactForm from './ContactForm.tsx';
+import LINKS from '../../constants/links';
+---
+
+<section class="contact section" id="contato">
+  <div class="container">
+    <div class="contact-grid">
+      <div class="contact-info">
+        <span class="section-label" data-i18n="contact.label">Contato</span>
+        <h2><span data-i18n="contact.title_1">Vamos conversar</span><br /><span class="gradient-text" data-i18n="contact.title_2">sobre seu projeto</span></h2>
+        <p class="contact-desc" data-i18n="contact.desc">
+          Agende uma consultoria de 30 minutos.
+          Analisaremos sua situação atual e mostraremos
+          exatamente como podemos ajudar seu negócio a crescer no digital.
+        </p>
+
+        <div class="contact-details">
+          <div class="contact-detail">
+            <div class="contact-detail-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                <polyline points="22,6 12,13 2,6"/>
+              </svg>
+            </div>
+            <div>
+              <span class="contact-detail-label" data-i18n="contact.email_label">E-mail</span>
+              <a href={LINKS.contact.emailHref} class="contact-detail-value">{LINKS.contact.email}</a>
+            </div>
+          </div>
+
+          <div class="contact-detail">
+            <div class="contact-detail-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/>
+              </svg>
+            </div>
+            <div>
+              <span class="contact-detail-label" data-i18n="contact.whatsapp_label">WhatsApp</span>
+              <a href={LINKS.contact.phoneHref} class="contact-detail-value">{LINKS.contact.phone}</a>
+            </div>
+          </div>
+
+          <div class="contact-detail">
+            <div class="contact-detail-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
+              </svg>
+            </div>
+            <div>
+              <span class="contact-detail-label" data-i18n="contact.hours_label">Atendimento</span>
+              <span class="contact-detail-value" data-i18n="contact.hours_value">Seg–Sex, 9h às 18h</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="contact-form-wrapper glass-card">
+        <ContactForm client:visible />
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .contact {
+    background: var(--gray-graphene);
+  }
+
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: start;
+  }
+
+  .contact-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .contact-desc {
+    margin-top: 0.5rem;
+    font-size: 1.0625rem;
+    line-height: 1.7;
+  }
+
+  .contact-details {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    margin-top: 1.5rem;
+  }
+
+  .contact-detail {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+  }
+
+  .contact-detail-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-md);
+    background: rgba(54, 162, 172, 0.08);
+    color: var(--green-digital);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .contact-detail-label {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--gray-base);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.125rem;
+  }
+
+  .contact-detail-value {
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--white-marble);
+  }
+
+  a.contact-detail-value:hover {
+    color: var(--green-digital);
+  }
+
+  .contact-form-wrapper {
+    padding: 2rem;
+  }
+
+  @media (max-width: 768px) {
+    .contact-grid {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+  }
+</style>

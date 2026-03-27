@@ -1,0 +1,159 @@
+---
+// Results — Metrics and stats (i18n-ready)
+import LINKS from '../../constants/links';
+---
+
+<section class="results section" id="resultados">
+  <div class="container">
+    <div class="results-header">
+      <span class="section-label" data-i18n="results.label">Resultados</span>
+      <h2><span data-i18n="results.title_1">Números que</span><br /><span class="gradient-text" data-i18n="results.title_2">falam por si</span></h2>
+    </div>
+
+    <div class="results-grid">
+      <div class="result-card">
+        <span class="result-icon">📈</span>
+        <span class="result-value" data-i18n="results.stat_1_value">+180%</span>
+        <p class="result-label" data-i18n="results.stat_1_label">Crescimento médio em buscas locais nos primeiros 60 dias</p>
+      </div>
+      <div class="result-card">
+        <span class="result-icon">🎯</span>
+        <span class="result-value" data-i18n="results.stat_2_value">+100</span>
+        <p class="result-label" data-i18n="results.stat_2_label">Empresas impactadas através da gestão de processos de Growth e UX/UI Design</p>
+      </div>
+      <div class="result-card">
+        <span class="result-icon">⚡</span>
+        <span class="result-value" data-i18n="results.stat_3_value">&lt;3s</span>
+        <p class="result-label" data-i18n="results.stat_3_label">Tempo de carregamento otimizado dos nossos sites</p>
+      </div>
+      <div class="result-card">
+        <span class="result-icon">🛡️</span>
+        <span class="result-value" data-i18n="results.stat_4_value">24/7</span>
+        <p class="result-label" data-i18n="results.stat_4_label">Monitoramento contínuo e backups automáticos</p>
+      </div>
+    </div>
+
+    <!-- Bottom highlight -->
+    <div class="results-highlight glass-card">
+      <div class="results-highlight-text">
+        <h3 data-i18n="results.highlight_title">Cada dia sem estar bem posicionado é uma oportunidade perdida.</h3>
+        <p data-i18n="results.highlight_desc">
+          Enquanto você espera, seus concorrentes estão capturando os clientes que
+          procuram exatamente o que você oferece. A questão não é SE você precisa de
+          presença digital profissional — mas QUANDO vai parar de perder dinheiro.
+        </p>
+      </div>
+      <a href={LINKS.sections.contato} class="btn btn-accent results-cta" data-i18n="results.highlight_cta">Pare de Perder Clientes</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .results {
+    background: var(--gray-graphene);
+  }
+
+  .results-header {
+    text-align: center;
+    max-width: 500px;
+    margin: 0 auto 4rem;
+  }
+
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.25rem;
+    margin-bottom: 3rem;
+  }
+
+  .result-card {
+    text-align: center;
+    padding: 2rem 1.25rem;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-border);
+    background: var(--result-card-bg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    transition: border-color var(--transition-base), transform var(--transition-base);
+  }
+
+  .result-card:hover {
+    border-color: var(--color-border-hover);
+    transform: translateY(-2px);
+  }
+
+  .result-icon {
+    font-size: 1.5rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .result-value {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 3vw, 2.75rem);
+    font-weight: 700;
+    color: var(--white-marble);
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+
+  .result-label {
+    font-size: 0.8125rem;
+    color: var(--gray-pearl);
+    line-height: 1.5;
+    max-width: 200px;
+  }
+
+  .results-highlight {
+    padding: 2.5rem;
+    display: flex;
+    align-items: center;
+    gap: 2.5rem;
+    background: var(--result-highlight-bg);
+    border-color: rgba(247, 200, 0, 0.1);
+  }
+
+  .results-highlight:hover {
+    border-color: rgba(247, 200, 0, 0.2);
+  }
+
+  .results-highlight-text {
+    flex: 1;
+  }
+
+  .results-highlight-text h3 {
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .results-highlight-text p {
+    font-size: 0.9375rem;
+    line-height: 1.7;
+  }
+
+  .results-cta {
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 1024px) {
+    .results-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .results-highlight {
+      flex-direction: column;
+      text-align: center;
+      gap: 1.5rem;
+      padding: 2rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .results-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

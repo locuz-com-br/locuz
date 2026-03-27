@@ -1,0 +1,202 @@
+---
+// Footer (i18n-ready)
+import Image from 'astro/components/Image.astro';
+import LINKS from '../../constants/links';
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href={LINKS.pages.home} aria-label="Locuz">
+          <Image src="/images/logo/logo_default_black.svg" alt="Locuz" width={48} height={48} class="footer-logo logo-light" loading="lazy" />
+          <Image src="/images/logo/logo_default.svg" alt="Locuz" width={48} height={48} class="footer-logo logo-dark" loading="lazy" />
+        </a>
+        <p class="footer-tagline" data-i18n="footer.tagline">
+          Transformamos presença digital em resultados tangíveis.
+        </p>
+      </div>
+
+      <div class="footer-columns">
+        <div class="footer-column">
+          <h4 class="footer-column-title" data-i18n="footer.col_services">Serviços</h4>
+          <ul>
+            <li><a href={LINKS.sections.servicos} data-i18n="footer.link_foundation">Fundação Digital</a></li>
+            <li><a href={LINKS.sections.servicos} data-i18n="footer.link_hub">Hub de Captação</a></li>
+            <li><a href={LINKS.sections.servicos} data-i18n="footer.link_scale">Sistema de Escala</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-column">
+          <h4 class="footer-column-title" data-i18n="footer.col_company">Empresa</h4>
+          <ul>
+            <li><a href={LINKS.sections.proposito} data-i18n="footer.link_about">Sobre Nós</a></li>
+            <li><a href={LINKS.sections.processo} data-i18n="footer.link_process">Processo</a></li>
+            <li><a href={LINKS.sections.resultados} data-i18n="footer.link_results">Resultados</a></li>
+            <li><a href={LINKS.sections.contato} data-i18n="footer.link_contact">Contato</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-column">
+          <h4 class="footer-column-title" data-i18n="footer.col_resources">Recursos</h4>
+          <ul>
+            <li><a href={LINKS.legal.blog} data-i18n="footer.link_blog">Blog</a></li>
+            <li><a href={LINKS.legal.terms} data-i18n="footer.link_terms">Termos de Uso</a></li>
+            <li><a href={LINKS.legal.privacy} data-i18n="footer.link_privacy">Política de Privacidade</a></li>
+            <li><a href={LINKS.legal.cookies} data-i18n="footer.link_cookies">Política de Cookies</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p class="footer-copy">© {year} Locuz. <span data-i18n="footer.copyright">Todos os direitos reservados.</span></p>
+      <div class="footer-social">
+        <a href={LINKS.socials.instagram} aria-label="Instagram" target="_blank" rel="noopener">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+          </svg>
+        </a>
+        <a href={LINKS.socials.linkedin} aria-label="LinkedIn" target="_blank" rel="noopener">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/>
+          </svg>
+        </a>
+        <a href={LINKS.socials.whatsapp} aria-label="WhatsApp" target="_blank" rel="noopener">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    border-top: 1px solid var(--color-border);
+    padding: 4rem 0 2rem;
+    background: var(--color-bg-alt);
+  }
+
+  .footer-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 4rem;
+    padding-bottom: 3rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .footer-brand {
+    max-width: 280px;
+  }
+
+  .footer-logo {
+    height: 48px;
+    width: auto;
+    margin-bottom: 1rem;
+  }
+
+  .footer-logo.logo-light {
+    display: block;
+  }
+  .footer-logo.logo-dark {
+    display: none;
+  }
+
+  :global([data-theme="dark"]) .footer-logo.logo-light { display: none; }
+  :global([data-theme="dark"]) .footer-logo.logo-dark { display: block; }
+
+  .footer-tagline {
+    font-size: 0.875rem;
+    color: var(--gray-base);
+    line-height: 1.6;
+  }
+
+  .footer-columns {
+    display: flex;
+    gap: 4rem;
+  }
+
+  .footer-column-title {
+    font-family: var(--font-body);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--gray-pearl);
+    margin-bottom: 1rem;
+  }
+
+  .footer-column ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+  }
+
+  .footer-column a {
+    font-size: 0.875rem;
+    color: var(--gray-base);
+    transition: color var(--transition-fast);
+  }
+
+  .footer-column a:hover {
+    color: var(--white-marble);
+  }
+
+  .footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1.5rem;
+  }
+
+  .footer-copy {
+    font-size: 0.8125rem;
+    color: var(--gray-base);
+  }
+
+  .footer-social {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .footer-social a {
+    color: var(--gray-base);
+    transition: color var(--transition-fast);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid var(--color-border);
+  }
+
+  .footer-social a:hover {
+    color: var(--white-marble);
+    border-color: var(--color-border-hover);
+  }
+
+  @media (max-width: 768px) {
+    .footer-top {
+      flex-direction: column;
+      gap: 2.5rem;
+    }
+
+    .footer-columns {
+      flex-wrap: wrap;
+      gap: 2rem;
+    }
+
+    .footer-bottom {
+      flex-direction: column;
+      gap: 1rem;
+      text-align: center;
+    }
+  }
+</style>

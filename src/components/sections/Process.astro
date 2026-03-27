@@ -1,0 +1,160 @@
+---
+// Process — Vertical timeline (i18n-ready)
+---
+
+<section class="process section" id="processo">
+  <div class="container">
+    <div class="process-header">
+      <span class="section-label" data-i18n="process.label">Como Funciona</span>
+      <h2><span data-i18n="process.title_1">Um processo</span> <span class="gradient-text" data-i18n="process.title_2">claro e eficiente</span></h2>
+      <p class="process-desc" data-i18n="process.desc">
+        Metodologia testada e refinada em dezenas de projetos.
+        Transparência total do início ao resultado.
+      </p>
+    </div>
+
+    <div class="process-timeline">
+      <div class="process-step">
+        <div class="process-step-line"><div class="process-step-dot"><span>01</span></div><div class="process-step-connector"></div></div>
+        <div class="process-step-content glass-card">
+          <div class="process-step-head"><h3 data-i18n="process.s1_title">Diagnóstico</h3><span class="process-step-detail" data-i18n="process.s1_detail">Reunião de kickoff + pesquisa aprofundada</span></div>
+          <p data-i18n="process.s1_desc">Imersão completa no seu negócio. Mapeamos processos, analisamos concorrentes, identificamos oportunidades e definimos objetivos claros.</p>
+        </div>
+      </div>
+      <div class="process-step">
+        <div class="process-step-line"><div class="process-step-dot"><span>02</span></div><div class="process-step-connector"></div></div>
+        <div class="process-step-content glass-card">
+          <div class="process-step-head"><h3 data-i18n="process.s2_title">Estratégia</h3><span class="process-step-detail" data-i18n="process.s2_detail">Planejamento estratégico + wireframes</span></div>
+          <p data-i18n="process.s2_desc">Criamos o plano de ação baseado em dados. Arquitetura de informação, wireframes, fluxos de conversão e cronograma detalhado.</p>
+        </div>
+      </div>
+      <div class="process-step">
+        <div class="process-step-line"><div class="process-step-dot"><span>03</span></div><div class="process-step-connector"></div></div>
+        <div class="process-step-content glass-card">
+          <div class="process-step-head"><h3 data-i18n="process.s3_title">Criação</h3><span class="process-step-detail" data-i18n="process.s3_detail">Design + Desenvolvimento + Conteúdo</span></div>
+          <p data-i18n="process.s3_desc">Design UI/UX, desenvolvimento, copywriting e branding. Cada elemento é estrategicamente posicionado para guiar seu cliente até a ação.</p>
+        </div>
+      </div>
+      <div class="process-step">
+        <div class="process-step-line"><div class="process-step-dot"><span>04</span></div><div class="process-step-connector"></div></div>
+        <div class="process-step-content glass-card">
+          <div class="process-step-head"><h3 data-i18n="process.s4_title">Implementação</h3><span class="process-step-detail" data-i18n="process.s4_detail">Testes + Integrações + Go-live</span></div>
+          <p data-i18n="process.s4_desc">Integrações, analytics, SEO técnico, testes de qualidade e otimização de performance. Nada vai ao ar sem aprovação.</p>
+        </div>
+      </div>
+      <div class="process-step">
+        <div class="process-step-line"><div class="process-step-dot"><span>05</span></div></div>
+        <div class="process-step-content glass-card">
+          <div class="process-step-head"><h3 data-i18n="process.s5_title">Crescimento</h3><span class="process-step-detail" data-i18n="process.s5_detail">Monitoramento + Otimização contínua</span></div>
+          <p data-i18n="process.s5_desc">Monitoramento contínuo, relatórios mensais, otimizações baseadas em dados reais e suporte ativo para escalar seus resultados.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .process-header {
+    text-align: center;
+    max-width: 560px;
+    margin: 0 auto 4rem;
+  }
+
+  .process-desc {
+    margin-top: 1rem;
+  }
+
+  .process-timeline {
+    max-width: 700px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .process-step {
+    display: flex;
+    gap: 1.5rem;
+  }
+
+  .process-step-line {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .process-step-dot {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--process-dot-bg);
+    border: 2px solid var(--color-border-hover);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--green-digital);
+    flex-shrink: 0;
+    transition: all var(--transition-base);
+    z-index: 1;
+  }
+
+  .process-step:hover .process-step-dot {
+    background: rgba(54, 162, 172, 0.15);
+    border-color: var(--green-digital);
+  }
+
+  .process-step-connector {
+    width: 1px;
+    flex-grow: 1;
+    background: linear-gradient(to bottom, var(--color-border-hover), var(--color-border));
+    min-height: 1.5rem;
+  }
+
+  .process-step-content {
+    padding: 1.5rem;
+    flex-grow: 1;
+    margin-bottom: 1rem;
+  }
+
+  .process-step-head {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .process-step-head h3 {
+    font-size: 1.125rem;
+  }
+
+  .process-step-detail {
+    font-size: 0.75rem;
+    color: var(--green-digital);
+    padding: 0.2rem 0.625rem;
+    border-radius: var(--radius-full);
+    background: rgba(54, 162, 172, 0.1);
+    font-weight: 500;
+  }
+
+  .process-step-content p {
+    font-size: 0.9375rem;
+    line-height: 1.6;
+  }
+
+  @media (max-width: 640px) {
+    .process-step {
+      gap: 1rem;
+    }
+
+    .process-step-dot {
+      width: 36px;
+      height: 36px;
+      font-size: 0.6875rem;
+    }
+  }
+</style>

@@ -1,0 +1,113 @@
+---
+// WhyLocuz — Value proposition grid (i18n-ready)
+---
+
+<section class="why section" id="proposito">
+  <div class="container">
+    <div class="why-header">
+      <span class="section-label" data-i18n="why.label">Por Que a Locuz</span>
+      <h2><span data-i18n="why.title_1">A diferença entre</span><br /><span class="gradient-text" data-i18n="why.title_2">existir e performar</span></h2>
+      <p class="why-desc" data-i18n="why.desc">
+        97% dos consumidores pesquisam online antes de comprar.
+        Se você não está posicionado profissionalmente, está perdendo vendas todos os dias.
+      </p>
+    </div>
+
+    <div class="why-grid">
+      <div class="why-card glass-card">
+        <div class="why-card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
+        <h3 class="why-card-title" data-i18n="why.v1_title">Estratégia Completa</h3>
+        <p class="why-card-desc" data-i18n="why.v1_desc">Não entregamos peças isoladas. Criamos um ecossistema digital integrado onde cada elemento trabalha para gerar resultado.</p>
+      </div>
+      <div class="why-card glass-card">
+        <div class="why-card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
+        <h3 class="why-card-title" data-i18n="why.v2_title">Entrega Ágil</h3>
+        <p class="why-card-desc" data-i18n="why.v2_desc">Processos otimizados que entregam fundações digitais em 10 dias e ecossistemas completos em 6-8 semanas.</p>
+      </div>
+      <div class="why-card glass-card">
+        <div class="why-card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+        <h3 class="why-card-title" data-i18n="why.v3_title">Resultado Mensurável</h3>
+        <p class="why-card-desc" data-i18n="why.v3_desc">Cada ação é rastreada e cada investimento é justificado por dados. Relatórios claros para decisões data-driven.</p>
+      </div>
+      <div class="why-card glass-card">
+        <div class="why-card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <h3 class="why-card-title" data-i18n="why.v4_title">Segurança Blindada</h3>
+        <p class="why-card-desc" data-i18n="why.v4_desc">Backups diários, monitoramento 24/7, certificados SSL e proteção contra ameaças. Sua operação nunca para.</p>
+      </div>
+      <div class="why-card glass-card">
+        <div class="why-card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+        <h3 class="why-card-title" data-i18n="why.v5_title">Parceria de Longo Prazo</h3>
+        <p class="why-card-desc" data-i18n="why.v5_desc">Não somos fornecedores pontuais. Crescemos junto com seu negócio, evoluindo soluções conforme você escala.</p>
+      </div>
+      <div class="why-card glass-card">
+        <div class="why-card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div>
+        <h3 class="why-card-title" data-i18n="why.v6_title">Escalabilidade</h3>
+        <p class="why-card-desc" data-i18n="why.v6_desc">Soluções que crescem com você. Da fundação digital à operação enterprise com CRM, automações e dashboards de BI.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .why {
+    background: var(--gray-graphene);
+  }
+
+  .why-header {
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto 4rem;
+  }
+
+  .why-desc {
+    margin-top: 1rem;
+  }
+
+  .why-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+  }
+
+  .why-card {
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .why-card-icon {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-md);
+    background: rgba(54, 162, 172, 0.08);
+    color: var(--green-digital);
+    margin-bottom: 0.25rem;
+  }
+
+  .why-card-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+  }
+
+  .why-card-desc {
+    font-size: 0.9375rem;
+    color: var(--gray-pearl);
+    line-height: 1.6;
+  }
+
+  @media (max-width: 1024px) {
+    .why-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .why-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
