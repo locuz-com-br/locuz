@@ -5,8 +5,138 @@ import HCaptcha from '@hcaptcha/react-hcaptcha';
 import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';
 
+const N8N_CAPTURE_WEBHOOK = import.meta.env.PUBLIC_N8N_CAPTURE_WEBHOOK || '';
+const WEB3FORMS_ACCESS_KEY = import.meta.env.PUBLIC_WEB3FORMS_ACCESS_KEY || '';
+const HCAPTCHA_SITE_KEY = import.meta.env.PUBLIC_HCAPTCHA_SITE_KEY || '';
+const N8N_TIMEOUT_MS = 8_000;
+
+type SubmissionStatus = 'idle' | 'sending' | 'sent' | 'error' | 'captcha_required';
+type PrimarySubmissionResult = 'sent' | 'fallback' | 'invalid_payload' | 'captcha_failed' | 'error';
+
+type CapturePayload = {
+  source: 'contact_page';
+  name: string;
+  email: string;
+  phone: string;
+  company: string;
+  message: string;
+  consent: true;
+  'h-captcha-response': string;
+};
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null;
+}
+
+async function readJson(response: Response): Promise<Record<string, unknown> | null> {
+  try {
+    const body: unknown = await response.json();
+    return isRecord(body) ? body : null;
+  } catch {
+    return null;
+  }
+}
+
+async function submitToN8n(payload: CapturePayload): Promise<PrimarySubmissionResult> {
+  // This guard is kept at runtime as well as build-time validation so an incorrectly
+  // configured deployed bundle never tries to POST back to the current page.
+  if (!N8N_CAPTURE_WEBHOOK) {
+    console.error('PUBLIC_N8N_CAPTURE_WEBHOOK is not configured. Trying the email fallback.');
+    return 'fallback';
+  }
+
+  const controller = new AbortController();
+  const timeoutId = window.setTimeout(() => controller.abort(), N8N_TIMEOUT_MS);
+
+  try {
+    const response = await fetch(N8N_CAPTURE_WEBHOOK, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+      body: JSON.stringify(payload),
+      signal: controller.signal,
+    });
+    const data = await readJson(response);
+
+    if (controller.signal.aborted) {
+      console.error('n8n capture request timed out. Trying the email fallback.');
+      return 'fallback';
+    }
+
+    // The webhook can accidentally return a 200 for an invalid submission, so its
+    // response body is part of the success contract.
+    if (response.status === 200 && data?.ok === true) {
+      return 'sent';
+    }
+
+    if (response.status >= 500 && response.status <= 599) {
+      console.error('n8n capture unavailable:', response.status, data);
+      return 'fallback';
+    }
+
+    if (response.status === 400) {
+      console.error('n8n rejected the capture payload:', data);
+      return 'invalid_payload';
+    }
+
+    if (response.status === 403) {
+      console.error('n8n rejected the hCaptcha token:', data);
+      return 'captcha_failed';
+    }
+
+    // A fallback is intentionally not used for non-5xx responses: resubmitting a
+    // valid rejection to Web3Forms would create duplicates or admit bot traffic.
+    console.error('Unexpected n8n capture response:', response.status, data);
+    return 'error';
+  } catch (error) {
+    // fetch rejects for network errors and for the timeout abort. Both are the
+    // degraded-mode condition in the capture contract.
+    console.error('n8n capture request failed:', error);
+    return 'fallback';
+  } finally {
+    window.clearTimeout(timeoutId);
+  }
+}
+
+async function submitToWeb3Forms(payload: CapturePayload): Promise<boolean> {
+  if (!WEB3FORMS_ACCESS_KEY) {
+    console.error('PUBLIC_WEB3FORMS_ACCESS_KEY is not configured.');
+    return false;
+  }
+
+  try {
+    const response = await fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+      body: JSON.stringify({
+        ...payload,
+        access_key: WEB3FORMS_ACCESS_KEY,
+        subject: 'Novo contato — site Locuz',
+        fallback: true,
+      }),
+    });
+    const data = await readJson(response);
+
+    if (response.ok && data?.success === true) {
+      return true;
+    }
+
+    console.error('Web3Forms fallback rejected the capture:', response.status, data);
+    return false;
+  } catch (error) {
+    console.error('Web3Forms fallback request failed:', error);
+    return false;
+  }
+}
+
 export default function ContactForm() {
-  const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error' | 'captcha_required'>('idle');
+  const [status, setStatus] = useState<SubmissionStatus>('idle');
+  const [errorMessage, setErrorMessage] = useState('');
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const [phoneValue, setPhoneValue] = useState<string | undefined>('');
   const [phoneCountry, setPhoneCountry] = useState<any>('BR');
@@ -77,49 +207,56 @@ export default function ContactForm() {
     }
 
     setStatus('sending');
+    setErrorMessage('');
 
     const form = e.currentTarget;
     const formData = new FormData(form);
-    
-    // O componente HCaptcha injeta um campo oculto "g-recaptcha-response" por compatibilidade.
-    // O Web3Forms detecta isso e acha que você está tentando usar o Recaptcha do Google (plano Pro).
-    // Precisamos deledar esse campo para que ele leia apenas o h-captcha-response gratuito.
-    formData.delete('g-recaptcha-response');
-    
-    // Pega a chave do arquivo .env
-    const accessKey = import.meta.env.PUBLIC_WEB3FORMS_ACCESS_KEY || '';
-    formData.append('access_key', accessKey);
-    formData.set('h-captcha-response', captchaToken);
-    formData.set('phone', phoneValue || '');
+    const payload: CapturePayload = {
+      source: 'contact_page',
+      name: String(formData.get('name') || '').trim(),
+      email: String(formData.get('email') || '').trim(),
+      phone: phoneValue || '',
+      company: String(formData.get('company') || '').trim(),
+      message: String(formData.get('message') || '').trim(),
+      consent: true,
+      'h-captcha-response': captchaToken,
+    };
 
-    const object = Object.fromEntries(formData);
-    const json = JSON.stringify(object);
+    const completeSubmission = () => {
+      setStatus('sent');
+      form.reset();
+      setPhoneValue('');
+      captchaRef.current?.resetCaptcha();
+      setCaptchaToken(null);
+    };
 
-    try {
-      const response = await fetch('https://api.web3forms.com/submit', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: json
-      });
+    const primaryResult = await submitToN8n(payload);
 
-      const data = await response.json();
+    if (primaryResult === 'sent') {
+      completeSubmission();
+      return;
+    }
 
-      if (data.success) {
-        setStatus('sent');
-        form.reset();
-        captchaRef.current?.resetCaptcha();
-        setCaptchaToken(null);
+    if (primaryResult === 'fallback') {
+      if (await submitToWeb3Forms(payload)) {
+        completeSubmission();
       } else {
-        console.error('Erro Web3Forms:', data);
+        setErrorMessage('Não foi possível enviar sua mensagem. Por favor, tente novamente.');
         setStatus('error');
       }
-    } catch (error) {
-      console.error('Erro na requisição:', error);
-      setStatus('error');
+      return;
     }
+
+    if (primaryResult === 'invalid_payload') {
+      setErrorMessage('Revise os dados informados e tente novamente.');
+    } else if (primaryResult === 'captcha_failed') {
+      setErrorMessage('A verificação de segurança expirou ou falhou. Resolva o captcha novamente.');
+      captchaRef.current?.resetCaptcha();
+      setCaptchaToken(null);
+    } else {
+      setErrorMessage('Não foi possível enviar sua mensagem. Por favor, tente novamente.');
+    }
+    setStatus('error');
   }
 
   return (
@@ -229,9 +366,13 @@ export default function ContactForm() {
       <div style={{ display: 'flex', justifyContent: 'flex-start', margin: '0.5rem 0' }}>
         <HCaptcha
           ref={captchaRef}
-          sitekey="50b2fe65-b00b-4b9e-ad62-3ba471098be2"
-          onVerify={(token) => setCaptchaToken(token)}
+          sitekey={HCAPTCHA_SITE_KEY}
+          onVerify={(token) => {
+            setCaptchaToken(token);
+            if (status === 'captcha_required') setStatus('idle');
+          }}
           onExpire={() => setCaptchaToken(null)}
+          onError={() => setCaptchaToken(null)}
         />
       </div>
       
@@ -260,8 +401,8 @@ export default function ContactForm() {
         </p>
       )}
       {status === 'error' && (
-        <p style={errorStyles} data-i18n="contact.form_error">
-          Algo deu errado. Por favor, tente novamente.
+        <p style={errorStyles}>
+          {errorMessage || 'Algo deu errado. Por favor, tente novamente.'}
         </p>
       )}
     </form>
