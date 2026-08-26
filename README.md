@@ -35,7 +35,7 @@
 - ⚡ **Lightning-fast** — Static-first architecture powered by Astro for near-instant load times
 - 🌍 **Multilingual** — Built-in PT / EN language toggle with no page reloads
 - 🎨 **Stunning visuals** — Three.js 3D scenes + GSAP animations for a premium feel
-- 📬 **Contact form** — Web3Forms email delivery + hCaptcha bot protection
+- 📬 **Contact form** — n8n lead capture with a Web3Forms fallback + hCaptcha bot protection
 - 📱 **Fully responsive** — Mobile-first design with Tailwind CSS v4
 - 🔒 **Security-first** — Clear vulnerability disclosure policy (see [SECURITY.md](SECURITY.md))
 - 🧩 **Component-driven** — Modular, reusable React & Astro components
@@ -137,18 +137,26 @@ The site supports **Portuguese (PT)** and **English (EN)** via a client-side i18
 
 ## 📬 Contact Form
 
-The contact form is powered by:
+The contact form sends to the n8n capture webhook first. If it times out, has a network
+error, or returns a 5xx response, it sends the same lead to Web3Forms marked as a
+`fallback`. A 400 or 403 is shown to the visitor and is never retried through Web3Forms.
 
-- **[Web3Forms](https://web3forms.com/)** — serverless email delivery, zero backend required
+It is powered by:
+
+- **n8n** — primary lead capture and storage
+- **[Web3Forms](https://web3forms.com/)** — email safety net when primary capture is unavailable
 - **[hCaptcha](https://www.hcaptcha.com/)** — privacy-friendly bot protection
 - **`react-phone-number-input`** — international phone field with automatic formatting
 
 Configure your keys in the `.env` file:
 
 ```env
-PUBLIC_WEB3FORMS_KEY=your_access_key_here
+PUBLIC_N8N_CAPTURE_WEBHOOK=https://n8n.psiativa.com.br/webhook/locuz-capture
+PUBLIC_WEB3FORMS_ACCESS_KEY=your_access_key_here
 PUBLIC_HCAPTCHA_SITE_KEY=your_site_key_here
 ```
+
+`PUBLIC_N8N_CAPTURE_WEBHOOK` is required for production builds.
 
 ---
 
