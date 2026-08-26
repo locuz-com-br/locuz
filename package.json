@@ -1,4 +1,13 @@
 {
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "deploy:check": "node scripts/deploy-ftp.mjs",
+    "deploy": "node scripts/deploy-ftp.mjs --publish",
+    "deploy:prune": "node scripts/deploy-ftp.mjs --publish --prune",
+    "deploy:status": "node scripts/deploy-ftp.mjs --verify"
+  },
   "dependencies": {
     "@astrojs/mdx": "^5.0.2",
     "@astrojs/react": "^5.0.1",
@@ -13,5 +22,9 @@
     "react-phone-number-input": "^3.4.16",
     "tailwindcss": "^4.2.2",
     "three": "^0.183.2"
+  },
+  "devDependencies": {
+    "basic-ftp": "^5.0.5",
+    "dotenv": "^16.4.7"
   }
 }

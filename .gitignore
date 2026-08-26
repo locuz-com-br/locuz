@@ -52,3 +52,4 @@ env
 .env.development
 .env.prod
 .env.dev
+!.env.example
