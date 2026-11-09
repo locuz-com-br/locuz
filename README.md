@@ -10,7 +10,7 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
 [![Three.js](https://img.shields.io/badge/Three.js-000000?style=for-the-badge&logo=threedotjs&logoColor=white)](https://threejs.org/)
 [![GSAP](https://img.shields.io/badge/GSAP-88CE02?style=for-the-badge&logo=greensock&logoColor=white)](https://greensock.com/gsap/)
-[![License](https://img.shields.io/badge/License-AGPL_v3-blue.svg?style=for-the-badge)](LICENSE)
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg?style=for-the-badge)](LICENSE)
 
 </div>
 
@@ -73,7 +73,7 @@ locuz/astro/
 ├── 📄 tailwind.config.mjs
 ├── 📄 tsconfig.json
 ├── 📄 SECURITY.md      # Security policy
-└── 📄 LICENSE          # AGPL-3.0 License
+└── 📄 LICENSE          # Apache 2.0 License
 ```
 
 ---
@@ -168,7 +168,7 @@ We take security seriously. If you discover a vulnerability, please follow our r
 
 ## 📄 License
 
-This project is distributed under the **GNU Affero General Public License v3.0** (AGPL-3.0).
+This project is distributed under the **Apache License 2.0**.
 See [**LICENSE**](LICENSE) for the full terms and conditions.
 
 ---
