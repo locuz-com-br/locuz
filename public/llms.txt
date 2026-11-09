@@ -1,0 +1,10 @@
+# Locuz
+
+> Assessoria de Growth especializada em ajudar empresas a alcançar o próximo nível. Transformamos sua presença digital em resultados reais.
+
+## Páginas
+
+- [Início](https://locuz.com.br/): soluções para cada fase do negócio, processo de trabalho, resultados, depoimentos e contato
+- [Privacidade](https://locuz.com.br/privacidade): política de privacidade
+- [Termos](https://locuz.com.br/termos): termos de uso
+- [Cookies](https://locuz.com.br/cookies): política de cookies
