@@ -4,7 +4,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
-  availableSlots, buildSlots, mergeRanges, subtract, tzOffsetMinutes, workingRanges, zonedToUtc,
+  availableSlots, brazilNationalHolidays, buildSlots, mergeRanges, subtract, tzOffsetMinutes, workingRanges, zonedToUtc,
 } from "./slots.mjs";
 
 const r = (start, end) => ({ start: Date.parse(start), end: Date.parse(end) });
@@ -118,4 +118,23 @@ test("availableSlots: a meeting on the PsiAtiva calendar removes the locuz slot"
 test("a wall-clock time just after a spring-forward gap converts right", () => {
   // New York jumps 02:00 → 03:00 on 2026-03-08 (07:00Z). A one-pass offset guess lands on 04:00.
   assert.equal(iso(zonedToUtc(2026, 3, 8, 3, 0, "America/New_York")), "2026-03-08T07:00:00.000Z");
+});
+
+test("Brazil 2026 holidays: Carnival, Good Friday and Corpus Christi move with Easter (April 5)", () => {
+  const h = brazilNationalHolidays(2026);
+  for (const day of ["2026-02-16", "2026-02-17", "2026-04-03", "2026-06-04", "2026-11-20", "2026-11-02"]) {
+    assert.ok(h.has(day), day);
+  }
+  assert.equal(h.size, 13);
+  assert.ok(!h.has("2026-04-05"));
+});
+
+test("availableSlots skips a national holiday on a weekday unless turned off", () => {
+  const settings = {
+    timezone: SP, window: { days: [1, 2, 3, 4, 5], start: "09:00", end: "10:00" },
+    horizon_days: 1, slot_step_minutes: 30, meeting_minutes: 15, min_notice_hours: 0,
+  };
+  const now = zonedToUtc(2026, 11, 20, 8, 0, SP); // Friday, Consciência Negra
+  assert.deepEqual(availableSlots({ now, settings, busy: [] }), []);
+  assert.equal(availableSlots({ now, settings: { ...settings, skip_national_holidays: false }, busy: [] }).length, 2);
 });

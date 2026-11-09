@@ -1,0 +1,1132 @@
+{
+  "name": "Locuz — Agenda (/agendar)",
+  "nodes": [
+    {
+      "id": "e9f2a1ec-df33-4211-83d9-8db896a625d7",
+      "name": "Webhook público",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "locuz-agenda",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "https://locuz.com.br,https://www.locuz.com.br"
+        }
+      },
+      "webhookId": "92db19c1-7ad8-4dc5-8e75-8fc1b5fdf262"
+    },
+    {
+      "id": "534969f8-60fe-4422-b551-ad930ae1b8ec",
+      "name": "Ler configuração",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        240,
+        0
+      ],
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT jsonb_object_agg(key, value) AS cfg FROM agenda.settings",
+        "options": {}
+      },
+      "credentials": {
+        "postgres": {
+          "id": "WSysCzkLNjcuvF56",
+          "name": "Locuz — Postgres (db_locuz)"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "alwaysOutputData": true
+    },
+    {
+      "id": "208fd029-cbf5-4e54-a437-c1da20dbda34",
+      "name": "Preparar entrada",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        0
+      ],
+      "parameters": {
+        "jsCode": "// Input contract: { op: 'horarios' | 'agendar' | 'link_info', starts_at?, phone?, lead_name?, token?, briefing?, ref? }\nconst raw = $('Webhook público').first().json;\nconst body = raw.body && typeof raw.body === 'object' ? raw.body : {};\nconst cfg = $('Ler configuração').first().json.cfg;\nif (!cfg || typeof cfg.ativa !== 'boolean') throw new Error('agenda.settings indisponível: /agendar bloqueado');\nconst salt = String($env.AGENDA_IP_SALT || '');\nif (!salt) throw new Error('AGENDA_IP_SALT ausente: /agendar bloqueado');\nconst headers = raw.headers || {};\nconst ip = String(headers['cf-connecting-ip'] || '').trim() || String(headers['x-forwarded-for'] || '').split(',')[0].trim() || null;\nconst ip_hash = ip ? require('crypto').createHmac('sha256', salt).update(ip).digest('hex') : null;\nconst op = String(body.op || '').trim().toLowerCase();\nconst token = /^[0-9a-f]{64}$/.test(String(body.token || '')) ? String(body.token) : '';\nlet reason = '';\nif (cfg.ativa !== true) reason = 'desligado';\nelse if (!['horarios', 'agendar', 'link_info'].includes(op)) reason = 'invalido';\nelse if (op === 'link_info' && !token) reason = 'link_invalido';\nconst rawBriefing = body.briefing && typeof body.briefing === 'object' && !Array.isArray(body.briefing) ? body.briefing : {};\nconst briefing = Object.fromEntries(Object.entries(rawBriefing).slice(0, 12)\n  .filter(([, v]) => ['string', 'number', 'boolean'].includes(typeof v))\n  .map(([k, v]) => [String(k).slice(0, 40), String(v).slice(0, 500)]));\nreturn [{ json: {\n  op, reason, cfg, ip_hash, token, origem: token ? 'link' : 'publico',\n  phone: String(body.phone || '').replace(/\\D/g, '').slice(0, 20),\n  lead_name: String(body.lead_name || '').trim().slice(0, 120),\n  starts_at: String(body.starts_at || ''), ref: String(body.ref || '').slice(0, 64),\n  briefing,\n} }];"
+      }
+    },
+    {
+      "id": "3b920933-e23e-4de3-aa8c-dfae52309fb7",
+      "name": "Entrada válida?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        720,
+        0
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "5cfacc7c-f800-4c3a-b85b-bb347b3ab4da",
+              "leftValue": "={{ $json.reason === '' }}",
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              },
+              "rightValue": true
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "9017a6fd-6faf-4cbd-b7ce-56ebaf70fc11",
+      "name": "É horários?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        960,
+        0
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "78b28aa2-10f7-4a22-9b7c-ee3a473482cd",
+              "leftValue": "={{ $json.op === 'horarios' }}",
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              },
+              "rightValue": true
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "0ae78a63-790f-4210-8125-e5159e8b8b56",
+      "name": "É agendar?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1200,
+        0
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "6f24a5d5-cd1f-470c-9444-aa139fc74871",
+              "leftValue": "={{ $json.op === 'agendar' }}",
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              },
+              "rightValue": true
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "e2a57de1-3d74-4995-9798-e3fd2bc6d8c4",
+      "name": "Ocupado no Google",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1200,
+        180
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://www.googleapis.com/calendar/v3/freeBusy",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleCalendarOAuth2Api",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ timeMin: new Date().toISOString(), timeMax: new Date(Date.now() + ($json.cfg.horizon_days + 1) * 86400000).toISOString(), items: $json.cfg.busy_calendars.map(id => ({ id })) }) }}",
+        "options": {
+          "timeout": 15000
+        }
+      },
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "rMy21Jaj01t3D170",
+          "name": "Locuz — Google Calendar"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "id": "3e08c94b-437c-4a65-8eaa-b5b657a8f875",
+      "name": "Ocupado no banco",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1440,
+        0
+      ],
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT coalesce(jsonb_agg(jsonb_build_object('start', b.starts_at, 'end', b.ends_at)), '[]'::jsonb) AS busy FROM agenda.busy(now(), now() + interval '15 days') b",
+        "options": {}
+      },
+      "credentials": {
+        "postgres": {
+          "id": "WSysCzkLNjcuvF56",
+          "name": "Locuz — Postgres (db_locuz)"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "alwaysOutputData": true
+    },
+    {
+      "id": "55fa718a-c638-4f1b-a0ad-7d42ab3d368e",
+      "name": "Calcular horários",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1680,
+        0
+      ],
+      "parameters": {
+        "jsCode": "// locuz /agendar — bookable slots from working hours minus busy time.\n// Runs server-side in the n8n Code node (paste without the `export`s) and in\n// node:test here. No dependencies: ranges are { start, end } in epoch ms.\n//\n// Ported from Cal.com (MIT, Copyright (c) 2020-present Cal.com, Inc.) at\n// calcom/cal.com@2eb48eccd8aca8a0c0ffabf28cf92e298b33ecee:\n//   packages/features/schedules/lib/date-ranges.ts   processWorkingHours, subtract\n//   packages/features/availability/lib/getAggregatedAvailability/\n//     date-range-utils/mergeOverlappingDateRanges.ts mergeOverlappingDateRanges\n//   packages/features/schedules/lib/slots.ts          buildSlotsWithDateRanges\n// Changes: dayjs → epoch ms + Intl; one host; no travel schedules, date\n// overrides, out-of-office, optimized slots or seats. See docs/cal-com-map.md.\n\nconst MINUTE = 60_000;\n\n/** Offset of `timeZone` from UTC at instant `ms`, in minutes (São Paulo: -180). */\nfunction tzOffsetMinutes(timeZone, ms) {\n  const parts = Object.fromEntries(\n    new Intl.DateTimeFormat(\"en-US\", {\n      timeZone, hourCycle: \"h23\", year: \"numeric\", month: \"2-digit\", day: \"2-digit\",\n      hour: \"2-digit\", minute: \"2-digit\", second: \"2-digit\",\n    }).formatToParts(new Date(ms)).map((p) => [p.type, p.value]));\n  const asUtc = Date.UTC(+parts.year, +parts.month - 1, +parts.day, +parts.hour, +parts.minute, +parts.second);\n  return Math.round((asUtc - Math.floor(ms / 1000) * 1000) / MINUTE);\n}\n\n/** Wall-clock time in `timeZone` → epoch ms. Re-checks the offset once, so a DST edge lands right. */\nfunction zonedToUtc(year, month, day, hour, minute, timeZone) {\n  const guess = Date.UTC(year, month - 1, day, hour, minute);\n  let utc = guess - tzOffsetMinutes(timeZone, guess) * MINUTE;\n  const second = guess - tzOffsetMinutes(timeZone, utc) * MINUTE;\n  if (second !== utc) utc = second;\n  return utc;\n}\n\nfunction localDate(ms, timeZone) {\n  const local = new Date(ms + tzOffsetMinutes(timeZone, ms) * MINUTE);\n  return { y: local.getUTCFullYear(), m: local.getUTCMonth() + 1, d: local.getUTCDate() };\n}\n\nconst hm = (s) => s.split(\":\").map(Number);\n\n/**\n * Brazil's national holidays as \"YYYY-MM-DD\" (Easter by Meeus/Jones/Butcher).\n * Same list as PsiAtiva's WF-D \"Montar candidatos\" (Sprint 11 F2); not from Cal.com.\n */\nfunction brazilNationalHolidays(year) {\n  const a = year % 19, b = Math.floor(year / 100), c = year % 100;\n  const d = Math.floor(b / 4), e = b % 4, f = Math.floor((b + 8) / 25);\n  const g = Math.floor((b - f + 1) / 3), h = (19 * a + b - d - g + 15) % 30;\n  const i = Math.floor(c / 4), k = c % 4, l = (32 + 2 * e + 2 * i - h - k) % 7;\n  const m = Math.floor((a + 11 * h + 22 * l) / 451);\n  const n = h + l - 7 * m + 114;\n  const easter = Date.UTC(year, Math.floor(n / 31) - 1, (n % 31) + 1);\n  const rel = (days) => new Date(easter + days * 86_400_000).toISOString().slice(0, 10);\n  return new Set([\n    `${year}-01-01`, rel(-48), rel(-47), rel(-2), `${year}-04-21`, `${year}-05-01`, rel(60),\n    `${year}-09-07`, `${year}-10-12`, `${year}-11-02`, `${year}-11-15`, `${year}-11-20`, `${year}-12-25`,\n  ]);\n}\n\n/**\n * Working hours → open ranges between `from` and `to` (Cal.com processWorkingHours).\n * window = { days: [1..7] (ISO, 1 = Monday), start: \"09:00\", end: \"18:00\" }.\n * skipDate(\"YYYY-MM-DD\") → true drops that local day (holidays).\n */\nfunction workingRanges({ from, to, timeZone, window, skipDate = () => false }) {\n  const [sh, sm] = hm(window.start);\n  const [eh, em] = hm(window.end);\n  const out = [];\n  let { y, m, d } = localDate(from, timeZone);\n  for (;;) {\n    const dayStart = zonedToUtc(y, m, d, 0, 0, timeZone);\n    if (dayStart >= to) break;\n    const isoDay = new Date(Date.UTC(y, m - 1, d)).getUTCDay() || 7;\n    const ymd = `${y}-${String(m).padStart(2, \"0\")}-${String(d).padStart(2, \"0\")}`;\n    if (window.days.includes(isoDay) && !skipDate(ymd)) {\n      const start = Math.max(zonedToUtc(y, m, d, sh, sm, timeZone), from);\n      const end = Math.min(zonedToUtc(y, m, d, eh, em, timeZone), to);\n      if (end > start) out.push({ start, end });\n    }\n    const next = new Date(Date.UTC(y, m - 1, d + 1));\n    y = next.getUTCFullYear(); m = next.getUTCMonth() + 1; d = next.getUTCDate();\n  }\n  return out;\n}\n\n/** Cal.com mergeOverlappingDateRanges: overlapping or touching-inside ranges become one. */\nfunction mergeRanges(ranges) {\n  const sorted = [...ranges].sort((a, b) => a.start - b.start);\n  const merged = [];\n  let current = sorted[0];\n  if (!current) return [];\n  for (let i = 1; i < sorted.length; i++) {\n    const next = sorted[i];\n    if (current.start <= next.start && current.end > next.start) {\n      current = { start: current.start, end: Math.max(current.end, next.end) };\n    } else {\n      merged.push(current);\n      current = next;\n    }\n  }\n  merged.push(current);\n  return merged;\n}\n\n/** Cal.com subtract: what is left of each source range after removing every excluded range. */\nfunction subtract(sourceRanges, excludedRanges) {\n  const result = [];\n  const excluded = [...excludedRanges].sort((a, b) => a.start - b.start);\n  for (const { start: sourceStart, end: sourceEnd } of sourceRanges) {\n    let currentStart = sourceStart;\n    for (const ex of excluded) {\n      if (ex.start >= sourceEnd) break;\n      if (ex.end <= currentStart) continue;\n      if (ex.start > currentStart) result.push({ start: currentStart, end: ex.start });\n      if (ex.end > currentStart) currentStart = ex.end;\n    }\n    if (sourceEnd > currentStart) result.push({ start: currentStart, end: sourceEnd });\n  }\n  return result;\n}\n\n/**\n * Cal.com buildSlotsWithDateRanges, one host: every `frequency` minutes from the\n * first grid point at or after max(range start, now + notice), while a slot of\n * `eventLength` minutes still fits in the range. The grid is the largest of\n * 60/30/20/15/10/5 that divides `frequency`, on the hour in `timeZone`.\n * Change: the notice is rounded UP to the minute (Cal.com drops the seconds).\n */\nfunction buildSlots({ ranges, frequency, eventLength, minimumNoticeMinutes, now, timeZone }) {\n  frequency = Math.max(1, frequency);\n  eventLength = Math.max(1, eventLength);\n  const interval = [60, 30, 20, 15, 10, 5].find((i) => frequency % i === 0) ?? 1;\n  const earliest = Math.ceil((now + minimumNoticeMinutes * MINUTE) / MINUTE) * MINUTE;\n  const slots = new Set();\n  for (const range of [...ranges].sort((a, b) => a.start - b.start)) {\n    let t = Math.ceil(Math.max(range.start, earliest) / MINUTE) * MINUTE;\n    const localMinute = ((t / MINUTE + tzOffsetMinutes(timeZone, t)) % 60 + 60) % 60;\n    if (localMinute % interval !== 0) t += (interval - (localMinute % interval)) * MINUTE;\n    for (; t + eventLength * MINUTE <= range.end; t += frequency * MINUTE) slots.add(t);\n  }\n  return [...slots].sort((a, b) => a - b);\n}\n\n/**\n * The /agendar answer: working hours over the horizon, minus every busy range\n * (Google free/busy of each calendar in `busy_calendars` + agenda.busy()),\n * cut into slots. `settings` are the agenda.settings values.\n */\nfunction availableSlots({ now, settings, busy }) {\n  const from = now;\n  const to = now + settings.horizon_days * 24 * 60 * MINUTE;\n  const holidays = new Map();\n  const skipDate = (ymd) => {\n    const year = Number(ymd.slice(0, 4));\n    if (!holidays.has(year)) holidays.set(year, brazilNationalHolidays(year));\n    return settings.skip_national_holidays !== false && holidays.get(year).has(ymd);\n  };\n  const open = workingRanges({ from, to, timeZone: settings.timezone, window: settings.window, skipDate });\n  const free = subtract(open, mergeRanges(busy));\n  return buildSlots({\n    ranges: free,\n    frequency: settings.slot_step_minutes,\n    eventLength: settings.meeting_minutes,\n    minimumNoticeMinutes: settings.min_notice_hours * 60,\n    now,\n    timeZone: settings.timezone,\n  });\n}\n\n// --- glue (n8n)\nconst rotulo = (ms, tz) => { const p = Object.fromEntries(new Intl.DateTimeFormat('pt-BR', { timeZone: tz, weekday: 'long', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(new Date(ms)).map(x => [x.type, x.value])); return p.weekday.replace('-feira', '') + ', ' + p.day + '/' + p.month + ' às ' + p.hour + ':' + p.minute; };\nconst e = $('Preparar entrada').first().json, cfg = e.cfg;\nconst g = $('Ocupado no Google').first().json.calendars || {};\nconst falhas = cfg.busy_calendars.filter(id => !g[id] || (g[id].errors || []).length);\nif (falhas.length) return [{ json: { ok: false, reason: 'calendar_error', detail: falhas } }];\nconst busy = [...cfg.busy_calendars.flatMap(id => g[id].busy || []), ...($('Ocupado no banco').first().json.busy || [])]\n  .map(b => ({ start: Date.parse(b.start), end: Date.parse(b.end) }));\nconst slots = availableSlots({ now: Date.now(), settings: cfg, busy });\nconst dia = (ms) => new Intl.DateTimeFormat('en-CA', { timeZone: cfg.timezone }).format(new Date(ms));\nconst dias = new Map();\nfor (const ms of slots) {\n  if (!dias.has(dia(ms))) dias.set(dia(ms), []);\n  dias.get(dia(ms)).push({ starts_at: new Date(ms).toISOString(), label: rotulo(ms, cfg.timezone) });\n}\nreturn [{ json: { ok: true, minutes: cfg.meeting_minutes, timezone: cfg.timezone,\n  dias: [...dias].map(([d, lista]) => ({ dia: d, slots: lista })) } }];"
+      }
+    },
+    {
+      "id": "a1736428-9800-4ad2-9cb2-802b2380d2dc",
+      "name": "Falha no Google",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2160,
+        0
+      ],
+      "parameters": {
+        "jsCode": "return [{ json: { ok: false, reason: 'calendar_error' } }];"
+      }
+    },
+    {
+      "id": "89cef5a9-a690-4950-af9f-11af5a5f263e",
+      "name": "Montar horário",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1440,
+        180
+      ],
+      "parameters": {
+        "jsCode": "// locuz /agendar — bookable slots from working hours minus busy time.\n// Runs server-side in the n8n Code node (paste without the `export`s) and in\n// node:test here. No dependencies: ranges are { start, end } in epoch ms.\n//\n// Ported from Cal.com (MIT, Copyright (c) 2020-present Cal.com, Inc.) at\n// calcom/cal.com@2eb48eccd8aca8a0c0ffabf28cf92e298b33ecee:\n//   packages/features/schedules/lib/date-ranges.ts   processWorkingHours, subtract\n//   packages/features/availability/lib/getAggregatedAvailability/\n//     date-range-utils/mergeOverlappingDateRanges.ts mergeOverlappingDateRanges\n//   packages/features/schedules/lib/slots.ts          buildSlotsWithDateRanges\n// Changes: dayjs → epoch ms + Intl; one host; no travel schedules, date\n// overrides, out-of-office, optimized slots or seats. See docs/cal-com-map.md.\n\nconst MINUTE = 60_000;\n\n/** Offset of `timeZone` from UTC at instant `ms`, in minutes (São Paulo: -180). */\nfunction tzOffsetMinutes(timeZone, ms) {\n  const parts = Object.fromEntries(\n    new Intl.DateTimeFormat(\"en-US\", {\n      timeZone, hourCycle: \"h23\", year: \"numeric\", month: \"2-digit\", day: \"2-digit\",\n      hour: \"2-digit\", minute: \"2-digit\", second: \"2-digit\",\n    }).formatToParts(new Date(ms)).map((p) => [p.type, p.value]));\n  const asUtc = Date.UTC(+parts.year, +parts.month - 1, +parts.day, +parts.hour, +parts.minute, +parts.second);\n  return Math.round((asUtc - Math.floor(ms / 1000) * 1000) / MINUTE);\n}\n\n/** Wall-clock time in `timeZone` → epoch ms. Re-checks the offset once, so a DST edge lands right. */\nfunction zonedToUtc(year, month, day, hour, minute, timeZone) {\n  const guess = Date.UTC(year, month - 1, day, hour, minute);\n  let utc = guess - tzOffsetMinutes(timeZone, guess) * MINUTE;\n  const second = guess - tzOffsetMinutes(timeZone, utc) * MINUTE;\n  if (second !== utc) utc = second;\n  return utc;\n}\n\nfunction localDate(ms, timeZone) {\n  const local = new Date(ms + tzOffsetMinutes(timeZone, ms) * MINUTE);\n  return { y: local.getUTCFullYear(), m: local.getUTCMonth() + 1, d: local.getUTCDate() };\n}\n\nconst hm = (s) => s.split(\":\").map(Number);\n\n/**\n * Brazil's national holidays as \"YYYY-MM-DD\" (Easter by Meeus/Jones/Butcher).\n * Same list as PsiAtiva's WF-D \"Montar candidatos\" (Sprint 11 F2); not from Cal.com.\n */\nfunction brazilNationalHolidays(year) {\n  const a = year % 19, b = Math.floor(year / 100), c = year % 100;\n  const d = Math.floor(b / 4), e = b % 4, f = Math.floor((b + 8) / 25);\n  const g = Math.floor((b - f + 1) / 3), h = (19 * a + b - d - g + 15) % 30;\n  const i = Math.floor(c / 4), k = c % 4, l = (32 + 2 * e + 2 * i - h - k) % 7;\n  const m = Math.floor((a + 11 * h + 22 * l) / 451);\n  const n = h + l - 7 * m + 114;\n  const easter = Date.UTC(year, Math.floor(n / 31) - 1, (n % 31) + 1);\n  const rel = (days) => new Date(easter + days * 86_400_000).toISOString().slice(0, 10);\n  return new Set([\n    `${year}-01-01`, rel(-48), rel(-47), rel(-2), `${year}-04-21`, `${year}-05-01`, rel(60),\n    `${year}-09-07`, `${year}-10-12`, `${year}-11-02`, `${year}-11-15`, `${year}-11-20`, `${year}-12-25`,\n  ]);\n}\n\n/**\n * Working hours → open ranges between `from` and `to` (Cal.com processWorkingHours).\n * window = { days: [1..7] (ISO, 1 = Monday), start: \"09:00\", end: \"18:00\" }.\n * skipDate(\"YYYY-MM-DD\") → true drops that local day (holidays).\n */\nfunction workingRanges({ from, to, timeZone, window, skipDate = () => false }) {\n  const [sh, sm] = hm(window.start);\n  const [eh, em] = hm(window.end);\n  const out = [];\n  let { y, m, d } = localDate(from, timeZone);\n  for (;;) {\n    const dayStart = zonedToUtc(y, m, d, 0, 0, timeZone);\n    if (dayStart >= to) break;\n    const isoDay = new Date(Date.UTC(y, m - 1, d)).getUTCDay() || 7;\n    const ymd = `${y}-${String(m).padStart(2, \"0\")}-${String(d).padStart(2, \"0\")}`;\n    if (window.days.includes(isoDay) && !skipDate(ymd)) {\n      const start = Math.max(zonedToUtc(y, m, d, sh, sm, timeZone), from);\n      const end = Math.min(zonedToUtc(y, m, d, eh, em, timeZone), to);\n      if (end > start) out.push({ start, end });\n    }\n    const next = new Date(Date.UTC(y, m - 1, d + 1));\n    y = next.getUTCFullYear(); m = next.getUTCMonth() + 1; d = next.getUTCDate();\n  }\n  return out;\n}\n\n/** Cal.com mergeOverlappingDateRanges: overlapping or touching-inside ranges become one. */\nfunction mergeRanges(ranges) {\n  const sorted = [...ranges].sort((a, b) => a.start - b.start);\n  const merged = [];\n  let current = sorted[0];\n  if (!current) return [];\n  for (let i = 1; i < sorted.length; i++) {\n    const next = sorted[i];\n    if (current.start <= next.start && current.end > next.start) {\n      current = { start: current.start, end: Math.max(current.end, next.end) };\n    } else {\n      merged.push(current);\n      current = next;\n    }\n  }\n  merged.push(current);\n  return merged;\n}\n\n/** Cal.com subtract: what is left of each source range after removing every excluded range. */\nfunction subtract(sourceRanges, excludedRanges) {\n  const result = [];\n  const excluded = [...excludedRanges].sort((a, b) => a.start - b.start);\n  for (const { start: sourceStart, end: sourceEnd } of sourceRanges) {\n    let currentStart = sourceStart;\n    for (const ex of excluded) {\n      if (ex.start >= sourceEnd) break;\n      if (ex.end <= currentStart) continue;\n      if (ex.start > currentStart) result.push({ start: currentStart, end: ex.start });\n      if (ex.end > currentStart) currentStart = ex.end;\n    }\n    if (sourceEnd > currentStart) result.push({ start: currentStart, end: sourceEnd });\n  }\n  return result;\n}\n\n/**\n * Cal.com buildSlotsWithDateRanges, one host: every `frequency` minutes from the\n * first grid point at or after max(range start, now + notice), while a slot of\n * `eventLength` minutes still fits in the range. The grid is the largest of\n * 60/30/20/15/10/5 that divides `frequency`, on the hour in `timeZone`.\n * Change: the notice is rounded UP to the minute (Cal.com drops the seconds).\n */\nfunction buildSlots({ ranges, frequency, eventLength, minimumNoticeMinutes, now, timeZone }) {\n  frequency = Math.max(1, frequency);\n  eventLength = Math.max(1, eventLength);\n  const interval = [60, 30, 20, 15, 10, 5].find((i) => frequency % i === 0) ?? 1;\n  const earliest = Math.ceil((now + minimumNoticeMinutes * MINUTE) / MINUTE) * MINUTE;\n  const slots = new Set();\n  for (const range of [...ranges].sort((a, b) => a.start - b.start)) {\n    let t = Math.ceil(Math.max(range.start, earliest) / MINUTE) * MINUTE;\n    const localMinute = ((t / MINUTE + tzOffsetMinutes(timeZone, t)) % 60 + 60) % 60;\n    if (localMinute % interval !== 0) t += (interval - (localMinute % interval)) * MINUTE;\n    for (; t + eventLength * MINUTE <= range.end; t += frequency * MINUTE) slots.add(t);\n  }\n  return [...slots].sort((a, b) => a - b);\n}\n\n/**\n * The /agendar answer: working hours over the horizon, minus every busy range\n * (Google free/busy of each calendar in `busy_calendars` + agenda.busy()),\n * cut into slots. `settings` are the agenda.settings values.\n */\nfunction availableSlots({ now, settings, busy }) {\n  const from = now;\n  const to = now + settings.horizon_days * 24 * 60 * MINUTE;\n  const holidays = new Map();\n  const skipDate = (ymd) => {\n    const year = Number(ymd.slice(0, 4));\n    if (!holidays.has(year)) holidays.set(year, brazilNationalHolidays(year));\n    return settings.skip_national_holidays !== false && holidays.get(year).has(ymd);\n  };\n  const open = workingRanges({ from, to, timeZone: settings.timezone, window: settings.window, skipDate });\n  const free = subtract(open, mergeRanges(busy));\n  return buildSlots({\n    ranges: free,\n    frequency: settings.slot_step_minutes,\n    eventLength: settings.meeting_minutes,\n    minimumNoticeMinutes: settings.min_notice_hours * 60,\n    now,\n    timeZone: settings.timezone,\n  });\n}\n\n// --- glue (n8n): the time must be one the page could have offered (grid, window, holiday, notice, horizon)\nconst rotulo = (ms, tz) => { const p = Object.fromEntries(new Intl.DateTimeFormat('pt-BR', { timeZone: tz, weekday: 'long', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(new Date(ms)).map(x => [x.type, x.value])); return p.weekday.replace('-feira', '') + ', ' + p.day + '/' + p.month + ' às ' + p.hour + ':' + p.minute; };\nconst e = $('Preparar entrada').first().json, cfg = e.cfg;\nconst t = Date.parse(e.starts_at);\nconst valido = Number.isFinite(t) && availableSlots({ now: Date.now(), settings: cfg, busy: [] }).includes(t);\nreturn [{ json: { valido, starts_at: valido ? new Date(t).toISOString() : '', ends_at: valido ? new Date(t + cfg.meeting_minutes * 60000).toISOString() : '',\n  label: valido ? rotulo(t, cfg.timezone) : '' } }];"
+      }
+    },
+    {
+      "id": "0b2a8fda-e17f-48f8-b067-639aa822e25c",
+      "name": "Horário válido?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1680,
+        180
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "9a752d34-3ade-4283-b1df-3a0f8de2b6c4",
+              "leftValue": "={{ $json.valido === true }}",
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              },
+              "rightValue": true
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "764cc506-283f-4d7c-981d-4d4a8c71af97",
+      "name": "Conferir no Google",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1920,
+        0
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://www.googleapis.com/calendar/v3/freeBusy",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleCalendarOAuth2Api",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ timeMin: $json.starts_at, timeMax: $json.ends_at, items: $('Preparar entrada').first().json.cfg.busy_calendars.map(id => ({ id })) }) }}",
+        "options": {
+          "timeout": 15000
+        }
+      },
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "rMy21Jaj01t3D170",
+          "name": "Locuz — Google Calendar"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "id": "c31555de-7dee-4e1c-a9a6-b55f6ffe6a5d",
+      "name": "Livre no Google?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        2160,
+        180
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "e250c9d6-3554-4a2d-ac66-3884162a2ff9",
+              "leftValue": "={{ $('Preparar entrada').first().json.cfg.busy_calendars.every(id => { const c = ($json.calendars || {})[id]; return !!c && !(c.errors || []).length && !(c.busy || []).length; }) }}",
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              },
+              "rightValue": true
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "7334c2e3-8040-4240-bdc2-261fd88268b7",
+      "name": "Reservar",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        2400,
+        0
+      ],
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "WITH b AS (SELECT agenda.book(p->>'origem', (p->>'starts_at')::timestamptz, 'site:agendar', NULLIF(p->>'phone', ''), NULLIF(p->>'name', ''), NULLIF(p->>'token', ''), NULLIF(p->>'ip', ''), p->'briefing', NULLIF(p->>'ref', '')) AS r FROM (SELECT $1::jsonb AS p) x) SELECT b.r, m.phone, m.lead_name FROM b LEFT JOIN agenda.meetings m ON m.id = (b.r->>'meeting_id')::bigint",
+        "options": {
+          "queryReplacement": "={{ JSON.stringify({ origem: $('Preparar entrada').first().json.origem, starts_at: $('Montar horário').first().json.starts_at, phone: $('Preparar entrada').first().json.phone, name: $('Preparar entrada').first().json.lead_name, token: $('Preparar entrada').first().json.token, ip: $('Preparar entrada').first().json.ip_hash, briefing: $('Preparar entrada').first().json.briefing, ref: $('Preparar entrada').first().json.ref }) }}"
+        }
+      },
+      "credentials": {
+        "postgres": {
+          "id": "WSysCzkLNjcuvF56",
+          "name": "Locuz — Postgres (db_locuz)"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "alwaysOutputData": true
+    },
+    {
+      "id": "2f8a7056-63eb-4960-bbb6-24be4562387a",
+      "name": "Reservou?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        2640,
+        0
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "60ccf18f-610e-4f1d-8286-3d4d56635499",
+              "leftValue": "={{ !!$json.r && $json.r.ok === true }}",
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              },
+              "rightValue": true
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "dffa7758-9d46-431a-9034-1310deae66c5",
+      "name": "Criar evento",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2880,
+        0
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://www.googleapis.com/calendar/v3/calendars/{{ encodeURIComponent($('Preparar entrada').first().json.cfg.calendar_id) }}/events?conferenceDataVersion=1&sendUpdates=none",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleCalendarOAuth2Api",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ summary: 'Bate-papo locuz' + ($json.lead_name ? ' — ' + $json.lead_name : ''), description: ['Bate-papo de ' + $('Preparar entrada').first().json.cfg.meeting_minutes + ' min, pelo Google Meet.', 'WhatsApp: +' + $json.phone, $('Preparar entrada').first().json.ref ? 'Ref: ' + $('Preparar entrada').first().json.ref : '', Object.keys($('Preparar entrada').first().json.briefing).length ? 'Briefing: ' + JSON.stringify($('Preparar entrada').first().json.briefing) : ''].filter(Boolean).join('\\n'), start: { dateTime: $('Montar horário').first().json.starts_at, timeZone: $('Preparar entrada').first().json.cfg.timezone }, end: { dateTime: $('Montar horário').first().json.ends_at, timeZone: $('Preparar entrada').first().json.cfg.timezone }, conferenceData: { createRequest: { requestId: 'locuz-' + $json.r.meeting_id + '-' + Date.now(), conferenceSolutionKey: { type: 'hangoutsMeet' } } }, extendedProperties: { private: { locuz_meeting_id: String($json.r.meeting_id) } }, reminders: { useDefault: true } }) }}",
+        "options": {
+          "timeout": 15000
+        }
+      },
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "rMy21Jaj01t3D170",
+          "name": "Locuz — Google Calendar"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "id": "ff6a222c-94cd-409c-955b-5d80ef5e76ec",
+      "name": "Anexar evento",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        3120,
+        0
+      ],
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT agenda.attach_calendar_event((p->>'mid')::bigint, p->>'eid', NULLIF(p->>'meet', '')) AS a FROM (SELECT $1::jsonb AS p) x",
+        "options": {
+          "queryReplacement": "={{ JSON.stringify({ mid: $('Reservar').first().json.r.meeting_id, eid: $json.id, meet: $json.hangoutLink || ((($json.conferenceData || {}).entryPoints || []).find(e => e.entryPointType === 'video') || {}).uri || '' }) }}"
+        }
+      },
+      "credentials": {
+        "postgres": {
+          "id": "WSysCzkLNjcuvF56",
+          "name": "Locuz — Postgres (db_locuz)"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "alwaysOutputData": true
+    },
+    {
+      "id": "fe10ebce-f553-437f-ba6e-7bfce1df0ceb",
+      "name": "Montar aviso",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3360,
+        0
+      ],
+      "parameters": {
+        "jsCode": "const e = $('Preparar entrada').first().json, h = $('Montar horário').first().json;\nconst r = $('Reservar').first().json, ev = $('Criar evento').first().json;\nconst meet = ev.hangoutLink || (((ev.conferenceData || {}).entryPoints || []).find(p => p.entryPointType === 'video') || {}).uri || '';\nconst b = e.briefing || {};\nconst linhas = [\n  e.origem === 'link' ? '📅 *[locuz] Bate-papo agendado — link privado*' : '📅 *[locuz] Bate-papo agendado — página*',\n  `👤 ${r.lead_name || 'Sem nome'} · +${r.phone}`,\n  `💬 https://wa.me/${r.phone}`,\n  `🗓️ ${h.label} (${e.cfg.meeting_minutes} min)`,\n  meet ? `🎥 ${meet}` : '⚠️ Sem link do Meet: confira o evento na agenda.',\n  e.ref ? `🔗 ref ${e.ref}` : '',\n  ...Object.entries(b).slice(0, 8).map(([k, v]) => `• ${k}: ${String(v).slice(0, 200)}`),\n].filter(Boolean);\nreturn [{ json: { texto: linhas.join('\\n'), adminPhone: String($env.PSIATIVA_ADMIN_PHONE || ''), ch: String($env.ZAPI_INSTANCE_ID || ''), meet } }];"
+      }
+    },
+    {
+      "id": "c8c3258a-c813-4ef8-b462-d8a57047524a",
+      "name": "Registrar aviso (Inbox PsiAtiva)",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        3600,
+        0
+      ],
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT inbox.register_outbound(x.p->>'channel', x.p->>'phone', 'automation', x.p->>'body', 'text', x.p->>'ref') AS message_id FROM (SELECT $1::jsonb AS p) x",
+        "options": {
+          "queryReplacement": "={{ JSON.stringify({ channel: $json.ch, phone: $json.adminPhone, body: $json.texto, ref: $workflow.id }) }}"
+        }
+      },
+      "credentials": {
+        "postgres": {
+          "id": "eRNTHOZXD6Sr89wF",
+          "name": "PsiAtiva — Postgres (db_psiativa)"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "alwaysOutputData": true
+    },
+    {
+      "id": "49c7333c-cfe9-4ae7-b05d-3e010135dc01",
+      "name": "Enviar aviso via Z-API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        3840,
+        0
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.z-api.io/instances/{{ $env.ZAPI_INSTANCE_ID }}/token/{{ $env.ZAPI_TOKEN }}/send-text",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Client-Token",
+              "value": "={{ $env.ZAPI_CLIENT_TOKEN }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "phone",
+              "value": "={{ $('Montar aviso').first().json.adminPhone }}"
+            },
+            {
+              "name": "message",
+              "value": "={{ $('Montar aviso').first().json.texto }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 15000
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "id": "a2087d85-5f9b-4ebb-be27-17fd9cbfceab",
+      "name": "Confirmar aviso (Inbox PsiAtiva)",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        4080,
+        0
+      ],
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT inbox.confirm_outbound((p->>'id')::bigint, NULLIF(p->>'pmid', ''), NULLIF(p->>'error', '')) AS r FROM (SELECT $1::jsonb AS p) x",
+        "options": {
+          "queryReplacement": "={{ JSON.stringify({ id: $('Registrar aviso (Inbox PsiAtiva)').first().json.message_id, pmid: $('Enviar aviso via Z-API').first().json.messageId || $('Enviar aviso via Z-API').first().json.zaapId || $('Enviar aviso via Z-API').first().json.id || '', error: $('Enviar aviso via Z-API').first().json.error ? JSON.stringify($('Enviar aviso via Z-API').first().json.error).slice(0, 500) : (($('Enviar aviso via Z-API').first().json.messageId || $('Enviar aviso via Z-API').first().json.zaapId || $('Enviar aviso via Z-API').first().json.id) ? '' : 'Z-API não devolveu id da mensagem') }) }}"
+        }
+      },
+      "credentials": {
+        "postgres": {
+          "id": "eRNTHOZXD6Sr89wF",
+          "name": "PsiAtiva — Postgres (db_psiativa)"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "alwaysOutputData": true
+    },
+    {
+      "id": "ce4d5edc-5cc9-48c9-99ef-504852ce7224",
+      "name": "Sucesso",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4320,
+        0
+      ],
+      "parameters": {
+        "jsCode": "const h = $('Montar horário').first().json, r = $('Reservar').first().json.r;\nreturn [{ json: { ok: true, meeting_id: r.meeting_id, starts_at: h.starts_at, ends_at: h.ends_at, label: h.label, meet_url: $('Montar aviso').first().json.meet || null } }];"
+      }
+    },
+    {
+      "id": "e7dc8e9a-5283-477c-b602-f640c2a499c1",
+      "name": "Cancelar reserva",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        3120,
+        180
+      ],
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT agenda.cancel_meeting((p->>'mid')::bigint, 'system:gcal_failed') AS cancelled FROM (SELECT $1::jsonb AS p) x",
+        "options": {
+          "queryReplacement": "={{ JSON.stringify({ mid: $('Reservar').first().json.r.meeting_id }) }}"
+        }
+      },
+      "credentials": {
+        "postgres": {
+          "id": "WSysCzkLNjcuvF56",
+          "name": "Locuz — Postgres (db_locuz)"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "alwaysOutputData": true
+    },
+    {
+      "id": "e779b921-f0df-41cd-b6ca-08967d184cf8",
+      "name": "Falha ao criar evento",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3360,
+        180
+      ],
+      "parameters": {
+        "jsCode": "return [{ json: { ok: false, reason: 'calendar_error' } }];"
+      }
+    },
+    {
+      "id": "9c07b128-7df1-40fc-b0f8-bd9ad52b1f7b",
+      "name": "Recusa da reserva",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2880,
+        180
+      ],
+      "parameters": {
+        "jsCode": "const r = $('Reservar').first().json.r;\nreturn [{ json: { ok: false, reason: (r && r.reason) || 'invalido' } }];"
+      }
+    },
+    {
+      "id": "0cc40d43-d15a-4b5a-bc30-12253a1453a1",
+      "name": "Horário ocupado",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2400,
+        180
+      ],
+      "parameters": {
+        "jsCode": "return [{ json: { ok: false, reason: 'slot_taken' } }];"
+      }
+    },
+    {
+      "id": "3d95c8fd-04aa-4fca-aae3-5c10f7d7403b",
+      "name": "Horário inválido",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1920,
+        180
+      ],
+      "parameters": {
+        "jsCode": "return [{ json: { ok: false, reason: 'invalido' } }];"
+      }
+    },
+    {
+      "id": "125c1871-d0cf-48e9-861e-5220eb37590f",
+      "name": "Ler link",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1440,
+        360
+      ],
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT agenda.resolve_booking_link(p->>'token') AS r FROM (SELECT $1::jsonb AS p) x",
+        "options": {
+          "queryReplacement": "={{ JSON.stringify({ token: $json.token }) }}"
+        }
+      },
+      "credentials": {
+        "postgres": {
+          "id": "WSysCzkLNjcuvF56",
+          "name": "Locuz — Postgres (db_locuz)"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "alwaysOutputData": true
+    },
+    {
+      "id": "ad2ba8b6-6635-4576-8ec6-364680e6c0b0",
+      "name": "Resposta do link",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1680,
+        360
+      ],
+      "parameters": {
+        "jsCode": "const r = $json.r || {};\nif (r.ok !== true) return [{ json: { ok: false, reason: r.reason || 'link_invalido' } }];\nreturn [{ json: { ok: true, lead_name: r.lead_name || '', phone_end: String(r.phone || '').slice(-4), expires_at: r.expires_at } }];"
+      }
+    },
+    {
+      "id": "4263fb59-f621-43f5-8263-bf2388eb70af",
+      "name": "Fechar recusa",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        960,
+        180
+      ],
+      "parameters": {
+        "jsCode": "return [{ json: { ok: false, reason: $('Preparar entrada').first().json.reason || 'invalido' } }];"
+      }
+    },
+    {
+      "id": "d7626aeb-4d57-4a41-8376-ab8ee5780dc4",
+      "name": "Responder",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        4560,
+        0
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify($json) }}",
+        "options": {}
+      }
+    }
+  ],
+  "connections": {
+    "Webhook público": {
+      "main": [
+        [
+          {
+            "node": "Ler configuração",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ler configuração": {
+      "main": [
+        [
+          {
+            "node": "Preparar entrada",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar entrada": {
+      "main": [
+        [
+          {
+            "node": "Entrada válida?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Entrada válida?": {
+      "main": [
+        [
+          {
+            "node": "É horários?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Fechar recusa",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "É horários?": {
+      "main": [
+        [
+          {
+            "node": "Ocupado no Google",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "É agendar?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "É agendar?": {
+      "main": [
+        [
+          {
+            "node": "Montar horário",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Ler link",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ocupado no Google": {
+      "main": [
+        [
+          {
+            "node": "Ocupado no banco",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Falha no Google",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ocupado no banco": {
+      "main": [
+        [
+          {
+            "node": "Calcular horários",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calcular horários": {
+      "main": [
+        [
+          {
+            "node": "Responder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Falha no Google": {
+      "main": [
+        [
+          {
+            "node": "Responder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Montar horário": {
+      "main": [
+        [
+          {
+            "node": "Horário válido?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Horário válido?": {
+      "main": [
+        [
+          {
+            "node": "Conferir no Google",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Horário inválido",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Conferir no Google": {
+      "main": [
+        [
+          {
+            "node": "Livre no Google?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Falha no Google",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Livre no Google?": {
+      "main": [
+        [
+          {
+            "node": "Reservar",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Horário ocupado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reservar": {
+      "main": [
+        [
+          {
+            "node": "Reservou?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reservou?": {
+      "main": [
+        [
+          {
+            "node": "Criar evento",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Recusa da reserva",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Criar evento": {
+      "main": [
+        [
+          {
+            "node": "Anexar evento",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Cancelar reserva",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Anexar evento": {
+      "main": [
+        [
+          {
+            "node": "Montar aviso",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Montar aviso": {
+      "main": [
+        [
+          {
+            "node": "Registrar aviso (Inbox PsiAtiva)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Registrar aviso (Inbox PsiAtiva)": {
+      "main": [
+        [
+          {
+            "node": "Enviar aviso via Z-API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar aviso via Z-API": {
+      "main": [
+        [
+          {
+            "node": "Confirmar aviso (Inbox PsiAtiva)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Confirmar aviso (Inbox PsiAtiva)": {
+      "main": [
+        [
+          {
+            "node": "Sucesso",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sucesso": {
+      "main": [
+        [
+          {
+            "node": "Responder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cancelar reserva": {
+      "main": [
+        [
+          {
+            "node": "Falha ao criar evento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Falha ao criar evento": {
+      "main": [
+        [
+          {
+            "node": "Responder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recusa da reserva": {
+      "main": [
+        [
+          {
+            "node": "Responder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Horário ocupado": {
+      "main": [
+        [
+          {
+            "node": "Responder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Horário inválido": {
+      "main": [
+        [
+          {
+            "node": "Responder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ler link": {
+      "main": [
+        [
+          {
+            "node": "Resposta do link",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Resposta do link": {
+      "main": [
+        [
+          {
+            "node": "Responder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fechar recusa": {
+      "main": [
+        [
+          {
+            "node": "Responder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "America/Sao_Paulo",
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all"
+  }
+}

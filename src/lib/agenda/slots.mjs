@@ -41,10 +41,30 @@ function localDate(ms, timeZone) {
 const hm = (s) => s.split(":").map(Number);
 
 /**
+ * Brazil's national holidays as "YYYY-MM-DD" (Easter by Meeus/Jones/Butcher).
+ * Same list as PsiAtiva's WF-D "Montar candidatos" (Sprint 11 F2); not from Cal.com.
+ */
+export function brazilNationalHolidays(year) {
+  const a = year % 19, b = Math.floor(year / 100), c = year % 100;
+  const d = Math.floor(b / 4), e = b % 4, f = Math.floor((b + 8) / 25);
+  const g = Math.floor((b - f + 1) / 3), h = (19 * a + b - d - g + 15) % 30;
+  const i = Math.floor(c / 4), k = c % 4, l = (32 + 2 * e + 2 * i - h - k) % 7;
+  const m = Math.floor((a + 11 * h + 22 * l) / 451);
+  const n = h + l - 7 * m + 114;
+  const easter = Date.UTC(year, Math.floor(n / 31) - 1, (n % 31) + 1);
+  const rel = (days) => new Date(easter + days * 86_400_000).toISOString().slice(0, 10);
+  return new Set([
+    `${year}-01-01`, rel(-48), rel(-47), rel(-2), `${year}-04-21`, `${year}-05-01`, rel(60),
+    `${year}-09-07`, `${year}-10-12`, `${year}-11-02`, `${year}-11-15`, `${year}-11-20`, `${year}-12-25`,
+  ]);
+}
+
+/**
  * Working hours → open ranges between `from` and `to` (Cal.com processWorkingHours).
  * window = { days: [1..7] (ISO, 1 = Monday), start: "09:00", end: "18:00" }.
+ * skipDate("YYYY-MM-DD") → true drops that local day (holidays).
  */
-export function workingRanges({ from, to, timeZone, window }) {
+export function workingRanges({ from, to, timeZone, window, skipDate = () => false }) {
   const [sh, sm] = hm(window.start);
   const [eh, em] = hm(window.end);
   const out = [];
@@ -53,7 +73,8 @@ export function workingRanges({ from, to, timeZone, window }) {
     const dayStart = zonedToUtc(y, m, d, 0, 0, timeZone);
     if (dayStart >= to) break;
     const isoDay = new Date(Date.UTC(y, m - 1, d)).getUTCDay() || 7;
-    if (window.days.includes(isoDay)) {
+    const ymd = `${y}-${String(m).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+    if (window.days.includes(isoDay) && !skipDate(ymd)) {
       const start = Math.max(zonedToUtc(y, m, d, sh, sm, timeZone), from);
       const end = Math.min(zonedToUtc(y, m, d, eh, em, timeZone), to);
       if (end > start) out.push({ start, end });
@@ -130,7 +151,13 @@ export function buildSlots({ ranges, frequency, eventLength, minimumNoticeMinute
 export function availableSlots({ now, settings, busy }) {
   const from = now;
   const to = now + settings.horizon_days * 24 * 60 * MINUTE;
-  const open = workingRanges({ from, to, timeZone: settings.timezone, window: settings.window });
+  const holidays = new Map();
+  const skipDate = (ymd) => {
+    const year = Number(ymd.slice(0, 4));
+    if (!holidays.has(year)) holidays.set(year, brazilNationalHolidays(year));
+    return settings.skip_national_holidays !== false && holidays.get(year).has(ymd);
+  };
+  const open = workingRanges({ from, to, timeZone: settings.timezone, window: settings.window, skipDate });
   const free = subtract(open, mergeRanges(busy));
   return buildSlots({
     ranges: free,
