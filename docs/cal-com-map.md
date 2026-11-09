@@ -28,6 +28,6 @@ Not copied: Prisma models, tRPC routers (`viewer/slots/*`), seats, round-robin/t
 
 ~300 lines of ported JS (items 1–4, 7) + our own ~100 (5, glue), split across n8n Code nodes or one shared module the n8n Code node loads. Tests: Cal.com's own `*.test.ts` for `mergeOverlappingDateRanges`/`filterRedundantDateRanges` are MIT too; port their cases as fixtures.
 
-## Open question for the owner
+## Where it lives (owner, 2026-11-08)
 
-- Where the ported module lives: **(a)** n8n Code nodes only (simplest; code lives in the workflow JSON, versioned by export), or **(b)** `src/lib/agenda/*.js` in this repo, unit-tested here, pasted/bundled into the n8n Code node at deploy. The owner said "mostly in the landing page repo" → (b) is the default.
+`src/lib/agenda/slots.mjs` (no dependencies; ranges in epoch ms; timezones via `Intl`) + `slots.test.mjs` (`npm run test:agenda`, 12 tests, 7/7 mutants red). For n8n, paste the module body into the Code node without the `export`s. The private-link rules (#7) live in SQL (`db/migrations/0001_agenda.sql`), not in JS.

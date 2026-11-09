@@ -6,7 +6,8 @@
     "deploy:check": "node scripts/deploy-ftp.mjs",
     "deploy": "node scripts/deploy-ftp.mjs --publish",
     "deploy:prune": "node scripts/deploy-ftp.mjs --publish --prune",
-    "deploy:status": "node scripts/deploy-ftp.mjs --verify"
+    "deploy:status": "node scripts/deploy-ftp.mjs --verify",
+    "test:agenda": "node --test src/lib/agenda/*.test.mjs"
   },
   "dependencies": {
     "@astrojs/mdx": "^5.0.2",
