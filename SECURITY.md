@@ -53,4 +53,4 @@ In return, we commit to:
 
 ## 📄 License
 
-This security policy is part of the project licensed under the [Apache License 2.0](LICENSE).
+This security policy is part of the project licensed under the [GNU AGPL-3.0](LICENSE).
