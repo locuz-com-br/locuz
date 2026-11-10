@@ -2,7 +2,7 @@
   "name": "Locuz — Agenda (/agendar)",
   "nodes": [
     {
-      "id": "e9f2a1ec-df33-4211-83d9-8db896a625d7",
+      "id": "a1a0bae6-8f3d-40ce-a576-16afb082f4e1",
       "name": "Webhook público",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2.1,
@@ -18,10 +18,10 @@
           "allowedOrigins": "https://locuz.com.br,https://www.locuz.com.br"
         }
       },
-      "webhookId": "92db19c1-7ad8-4dc5-8e75-8fc1b5fdf262"
+      "webhookId": "ef0fac10-3704-4f75-82de-75e87c1f87fa"
     },
     {
-      "id": "534969f8-60fe-4422-b551-ad930ae1b8ec",
+      "id": "c11d0571-34b4-46ab-96b8-9454c878b5c0",
       "name": "Ler configuração",
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
@@ -44,7 +44,7 @@
       "alwaysOutputData": true
     },
     {
-      "id": "208fd029-cbf5-4e54-a437-c1da20dbda34",
+      "id": "6348d4ef-5fcb-4e44-99d0-61d5f93412b2",
       "name": "Preparar entrada",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -57,7 +57,7 @@
       }
     },
     {
-      "id": "3b920933-e23e-4de3-aa8c-dfae52309fb7",
+      "id": "503ce4fd-c67e-4802-abe9-8f20feb9cffd",
       "name": "Entrada válida?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
@@ -75,7 +75,7 @@
           },
           "conditions": [
             {
-              "id": "5cfacc7c-f800-4c3a-b85b-bb347b3ab4da",
+              "id": "0659f39f-3952-41a8-b8d5-00e578bb8479",
               "leftValue": "={{ $json.reason === '' }}",
               "operator": {
                 "type": "boolean",
@@ -90,7 +90,7 @@
       }
     },
     {
-      "id": "9017a6fd-6faf-4cbd-b7ce-56ebaf70fc11",
+      "id": "01256ab5-07b7-4cb2-8cd6-0ed5a6cf7360",
       "name": "É horários?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
@@ -108,7 +108,7 @@
           },
           "conditions": [
             {
-              "id": "78b28aa2-10f7-4a22-9b7c-ee3a473482cd",
+              "id": "84a0128e-759c-479e-8858-58d6c7bac3a2",
               "leftValue": "={{ $json.op === 'horarios' }}",
               "operator": {
                 "type": "boolean",
@@ -123,7 +123,7 @@
       }
     },
     {
-      "id": "0ae78a63-790f-4210-8125-e5159e8b8b56",
+      "id": "3b685dba-d721-4c70-bfb5-e63844923ccb",
       "name": "É agendar?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
@@ -141,7 +141,7 @@
           },
           "conditions": [
             {
-              "id": "6f24a5d5-cd1f-470c-9444-aa139fc74871",
+              "id": "7246bc2b-0e7b-4924-a698-d96594852751",
               "leftValue": "={{ $json.op === 'agendar' }}",
               "operator": {
                 "type": "boolean",
@@ -156,7 +156,7 @@
       }
     },
     {
-      "id": "e2a57de1-3d74-4995-9798-e3fd2bc6d8c4",
+      "id": "f87957af-717a-4976-84e7-d1da33e5de18",
       "name": "Ocupado no Google",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -185,7 +185,7 @@
       "onError": "continueErrorOutput"
     },
     {
-      "id": "3e08c94b-437c-4a65-8eaa-b5b657a8f875",
+      "id": "d33b04de-7864-4069-af71-2f2543fb79c1",
       "name": "Ocupado no banco",
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
@@ -208,7 +208,7 @@
       "alwaysOutputData": true
     },
     {
-      "id": "55fa718a-c638-4f1b-a0ad-7d42ab3d368e",
+      "id": "5abb7342-f21c-489a-bef9-50c5121b5b76",
       "name": "Calcular horários",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -221,7 +221,7 @@
       }
     },
     {
-      "id": "a1736428-9800-4ad2-9cb2-802b2380d2dc",
+      "id": "ec43bbc8-2de4-41dc-ba8f-88cf7e397469",
       "name": "Falha no Google",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -234,7 +234,7 @@
       }
     },
     {
-      "id": "89cef5a9-a690-4950-af9f-11af5a5f263e",
+      "id": "9d47d52f-00fc-4ecd-ac3f-4657b8585919",
       "name": "Montar horário",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -247,7 +247,7 @@
       }
     },
     {
-      "id": "0b2a8fda-e17f-48f8-b067-639aa822e25c",
+      "id": "daa97e3c-7a12-48b6-9453-d4efb9186f1c",
       "name": "Horário válido?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
@@ -265,7 +265,7 @@
           },
           "conditions": [
             {
-              "id": "9a752d34-3ade-4283-b1df-3a0f8de2b6c4",
+              "id": "039530a5-54c3-4e11-881b-c6fe05869cfc",
               "leftValue": "={{ $json.valido === true }}",
               "operator": {
                 "type": "boolean",
@@ -280,7 +280,7 @@
       }
     },
     {
-      "id": "764cc506-283f-4d7c-981d-4d4a8c71af97",
+      "id": "0a0cfc14-7e10-4825-af7d-225907dacf77",
       "name": "Conferir no Google",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -309,7 +309,7 @@
       "onError": "continueErrorOutput"
     },
     {
-      "id": "c31555de-7dee-4e1c-a9a6-b55f6ffe6a5d",
+      "id": "156508d5-03dd-4648-9ae4-2f908c6ed8bc",
       "name": "Livre no Google?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
@@ -327,7 +327,7 @@
           },
           "conditions": [
             {
-              "id": "e250c9d6-3554-4a2d-ac66-3884162a2ff9",
+              "id": "c1af5482-7123-4f3d-abc7-27e4d816071a",
               "leftValue": "={{ $('Preparar entrada').first().json.cfg.busy_calendars.every(id => { const c = ($json.calendars || {})[id]; return !!c && !(c.errors || []).length && !(c.busy || []).length; }) }}",
               "operator": {
                 "type": "boolean",
@@ -342,7 +342,7 @@
       }
     },
     {
-      "id": "7334c2e3-8040-4240-bdc2-261fd88268b7",
+      "id": "c6c185b4-2b0c-42de-bef8-ed70bbe5fc77",
       "name": "Reservar",
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
@@ -352,7 +352,7 @@
       ],
       "parameters": {
         "operation": "executeQuery",
-        "query": "WITH b AS (SELECT agenda.book(p->>'origem', (p->>'starts_at')::timestamptz, 'site:agendar', NULLIF(p->>'phone', ''), NULLIF(p->>'name', ''), NULLIF(p->>'token', ''), NULLIF(p->>'ip', ''), p->'briefing', NULLIF(p->>'ref', '')) AS r FROM (SELECT $1::jsonb AS p) x) SELECT b.r, m.phone, m.lead_name FROM b LEFT JOIN agenda.meetings m ON m.id = (b.r->>'meeting_id')::bigint",
+        "query": "SELECT agenda.book(p->>'origem', (p->>'starts_at')::timestamptz, 'site:agendar', NULLIF(p->>'phone', ''), NULLIF(p->>'name', ''), NULLIF(p->>'token', ''), NULLIF(p->>'ip', ''), p->'briefing', NULLIF(p->>'ref', '')) AS r FROM (SELECT $1::jsonb AS p) x",
         "options": {
           "queryReplacement": "={{ JSON.stringify({ origem: $('Preparar entrada').first().json.origem, starts_at: $('Montar horário').first().json.starts_at, phone: $('Preparar entrada').first().json.phone, name: $('Preparar entrada').first().json.lead_name, token: $('Preparar entrada').first().json.token, ip: $('Preparar entrada').first().json.ip_hash, briefing: $('Preparar entrada').first().json.briefing, ref: $('Preparar entrada').first().json.ref }) }}"
         }
@@ -367,7 +367,7 @@
       "alwaysOutputData": true
     },
     {
-      "id": "2f8a7056-63eb-4960-bbb6-24be4562387a",
+      "id": "5a138369-1dd7-478f-9da3-aac0b4037788",
       "name": "Reservou?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
@@ -385,7 +385,7 @@
           },
           "conditions": [
             {
-              "id": "60ccf18f-610e-4f1d-8286-3d4d56635499",
+              "id": "9dafc755-50c9-4829-82a9-b468c65dd8ff",
               "leftValue": "={{ !!$json.r && $json.r.ok === true }}",
               "operator": {
                 "type": "boolean",
@@ -400,12 +400,37 @@
       }
     },
     {
-      "id": "dffa7758-9d46-431a-9034-1310deae66c5",
+      "id": "2a2a3d84-b25f-4bb4-a0da-304d4a750a00",
+      "name": "Ler reunião",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        2880,
+        0
+      ],
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT p->'r' AS r, m.phone, m.lead_name FROM (SELECT $1::jsonb AS p) x LEFT JOIN agenda.meetings m ON m.id = (p->'r'->>'meeting_id')::bigint",
+        "options": {
+          "queryReplacement": "={{ JSON.stringify({ r: $json.r }) }}"
+        }
+      },
+      "credentials": {
+        "postgres": {
+          "id": "WSysCzkLNjcuvF56",
+          "name": "Locuz — Postgres (db_locuz)"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "alwaysOutputData": true
+    },
+    {
+      "id": "6b29dadf-a84e-438b-91c3-51ce6db2f273",
       "name": "Criar evento",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        2880,
+        3120,
         0
       ],
       "parameters": {
@@ -429,12 +454,12 @@
       "onError": "continueErrorOutput"
     },
     {
-      "id": "ff6a222c-94cd-409c-955b-5d80ef5e76ec",
+      "id": "dbeeed33-7286-4e1f-8c2d-8176e8310dfe",
       "name": "Anexar evento",
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        3120,
+        3360,
         0
       ],
       "parameters": {
@@ -454,25 +479,25 @@
       "alwaysOutputData": true
     },
     {
-      "id": "fe10ebce-f553-437f-ba6e-7bfce1df0ceb",
+      "id": "caf924de-4a3d-4771-9cb7-17ed0bc62e26",
       "name": "Montar aviso",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3360,
+        3600,
         0
       ],
       "parameters": {
-        "jsCode": "const e = $('Preparar entrada').first().json, h = $('Montar horário').first().json;\nconst r = $('Reservar').first().json, ev = $('Criar evento').first().json;\nconst meet = ev.hangoutLink || (((ev.conferenceData || {}).entryPoints || []).find(p => p.entryPointType === 'video') || {}).uri || '';\nconst b = e.briefing || {};\nconst linhas = [\n  e.origem === 'link' ? '📅 *[locuz] Bate-papo agendado — link privado*' : '📅 *[locuz] Bate-papo agendado — página*',\n  `👤 ${r.lead_name || 'Sem nome'} · +${r.phone}`,\n  `💬 https://wa.me/${r.phone}`,\n  `🗓️ ${h.label} (${e.cfg.meeting_minutes} min)`,\n  meet ? `🎥 ${meet}` : '⚠️ Sem link do Meet: confira o evento na agenda.',\n  e.ref ? `🔗 ref ${e.ref}` : '',\n  ...Object.entries(b).slice(0, 8).map(([k, v]) => `• ${k}: ${String(v).slice(0, 200)}`),\n].filter(Boolean);\nreturn [{ json: { texto: linhas.join('\\n'), adminPhone: String($env.PSIATIVA_ADMIN_PHONE || ''), ch: String($env.ZAPI_INSTANCE_ID || ''), meet } }];"
+        "jsCode": "const e = $('Preparar entrada').first().json, h = $('Montar horário').first().json;\nconst r = $('Ler reunião').first().json, ev = $('Criar evento').first().json;\nconst meet = ev.hangoutLink || (((ev.conferenceData || {}).entryPoints || []).find(p => p.entryPointType === 'video') || {}).uri || '';\nconst b = e.briefing || {};\nconst linhas = [\n  e.origem === 'link' ? '📅 *[locuz] Bate-papo agendado — link privado*' : '📅 *[locuz] Bate-papo agendado — página*',\n  `👤 ${r.lead_name || 'Sem nome'} · +${r.phone}`,\n  `💬 https://wa.me/${r.phone}`,\n  `🗓️ ${h.label} (${e.cfg.meeting_minutes} min)`,\n  meet ? `🎥 ${meet}` : '⚠️ Sem link do Meet: confira o evento na agenda.',\n  e.ref ? `🔗 ref ${e.ref}` : '',\n  ...Object.entries(b).slice(0, 8).map(([k, v]) => `• ${k}: ${String(v).slice(0, 200)}`),\n].filter(Boolean);\nreturn [{ json: { texto: linhas.join('\\n'), adminPhone: String($env.PSIATIVA_ADMIN_PHONE || ''), ch: String($env.ZAPI_INSTANCE_ID || ''), meet } }];"
       }
     },
     {
-      "id": "c8c3258a-c813-4ef8-b462-d8a57047524a",
+      "id": "06640327-e1ae-4bc0-aab1-d1327a1723c3",
       "name": "Registrar aviso (Inbox PsiAtiva)",
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        3600,
+        3840,
         0
       ],
       "parameters": {
@@ -492,12 +517,12 @@
       "alwaysOutputData": true
     },
     {
-      "id": "49c7333c-cfe9-4ae7-b05d-3e010135dc01",
+      "id": "21fc1cb7-8ab3-4fea-b926-0337489803de",
       "name": "Enviar aviso via Z-API",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        3840,
+        4080,
         0
       ],
       "parameters": {
@@ -536,12 +561,12 @@
       "onError": "continueRegularOutput"
     },
     {
-      "id": "a2087d85-5f9b-4ebb-be27-17fd9cbfceab",
+      "id": "77b30cf4-8233-45d1-95fe-83f6f4522d28",
       "name": "Confirmar aviso (Inbox PsiAtiva)",
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        4080,
+        4320,
         0
       ],
       "parameters": {
@@ -561,12 +586,12 @@
       "alwaysOutputData": true
     },
     {
-      "id": "ce4d5edc-5cc9-48c9-99ef-504852ce7224",
+      "id": "9535a09a-afa4-4abb-ab0b-7bedf071fbd7",
       "name": "Sucesso",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4320,
+        4560,
         0
       ],
       "parameters": {
@@ -574,12 +599,12 @@
       }
     },
     {
-      "id": "e7dc8e9a-5283-477c-b602-f640c2a499c1",
+      "id": "76f44a49-8bc3-4601-bc0a-b0e587c887dc",
       "name": "Cancelar reserva",
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        3120,
+        3360,
         180
       ],
       "parameters": {
@@ -599,12 +624,12 @@
       "alwaysOutputData": true
     },
     {
-      "id": "e779b921-f0df-41cd-b6ca-08967d184cf8",
+      "id": "f92cc664-499c-4df1-b4a0-7ed8d92c3f4f",
       "name": "Falha ao criar evento",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3360,
+        3600,
         180
       ],
       "parameters": {
@@ -612,7 +637,7 @@
       }
     },
     {
-      "id": "9c07b128-7df1-40fc-b0f8-bd9ad52b1f7b",
+      "id": "aa6f2cec-bd51-46d0-b773-b1dc63940437",
       "name": "Recusa da reserva",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -625,7 +650,7 @@
       }
     },
     {
-      "id": "0cc40d43-d15a-4b5a-bc30-12253a1453a1",
+      "id": "4bccf12d-dafc-4746-b4b2-a26977e510c1",
       "name": "Horário ocupado",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -638,7 +663,7 @@
       }
     },
     {
-      "id": "3d95c8fd-04aa-4fca-aae3-5c10f7d7403b",
+      "id": "eafb3c25-5801-4690-a7f3-e2737697b61a",
       "name": "Horário inválido",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -651,7 +676,7 @@
       }
     },
     {
-      "id": "125c1871-d0cf-48e9-861e-5220eb37590f",
+      "id": "f94ad542-7c29-480d-8a58-e93243d69374",
       "name": "Ler link",
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
@@ -676,7 +701,7 @@
       "alwaysOutputData": true
     },
     {
-      "id": "ad2ba8b6-6635-4576-8ec6-364680e6c0b0",
+      "id": "8e6fbb24-8917-4041-b97d-d4964cf89aad",
       "name": "Resposta do link",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -689,7 +714,7 @@
       }
     },
     {
-      "id": "4263fb59-f621-43f5-8263-bf2388eb70af",
+      "id": "0541e0a9-7b5f-45b1-9c63-d2c209217554",
       "name": "Fechar recusa",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -702,12 +727,12 @@
       }
     },
     {
-      "id": "d7626aeb-4d57-4a41-8376-ab8ee5780dc4",
+      "id": "7b1f47e8-0a0a-4fbc-81e4-02d74c61f89d",
       "name": "Responder",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.5,
       "position": [
-        4560,
+        4800,
         0
       ],
       "parameters": {
@@ -936,7 +961,7 @@
       "main": [
         [
           {
-            "node": "Criar evento",
+            "node": "Ler reunião",
             "type": "main",
             "index": 0
           }
@@ -944,6 +969,17 @@
         [
           {
             "node": "Recusa da reserva",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ler reunião": {
+      "main": [
+        [
+          {
+            "node": "Criar evento",
             "type": "main",
             "index": 0
           }

@@ -59,3 +59,17 @@ test("Montar horário accepts only a time the page could offer", () => {
   assert.equal(run("Montar horário", { "Preparar entrada": { cfg, starts_at: offGrid } }).valido, false);
   assert.equal(run("Montar horário", { "Preparar entrada": { cfg, starts_at: "amanhã" } }).valido, false);
 });
+
+test("Montar aviso reads name and phone from Ler reunião, not from the statement that books", () => {
+  const reservar = wf.nodes.find((n) => n.name === "Reservar").parameters.query;
+  assert.doesNotMatch(reservar, /agenda\.meetings/);
+  assert.deepEqual(wf.connections["Reservou?"].main[0].map((c) => c.node), ["Ler reunião"]);
+  const aviso = run("Montar aviso", {
+    "Preparar entrada": { origem: "publico", cfg, ref: "", briefing: {} },
+    "Montar horário": { label: "terça, 17/11 às 10:00" },
+    "Ler reunião": { r: { ok: true, meeting_id: 1 }, phone: "5521900000000", lead_name: "Ana" },
+    "Criar evento": { hangoutLink: "https://meet.google.com/x" },
+  });
+  assert.match(aviso.texto, /👤 Ana · \+5521900000000/);
+  assert.match(aviso.texto, /wa\.me\/5521900000000/);
+});

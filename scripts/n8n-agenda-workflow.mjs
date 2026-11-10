@@ -110,9 +110,13 @@ return [{ json: { valido, starts_at: valido ? new Date(t).toISOString() : '', en
   freeBusy("Conferir no Google", "={{ JSON.stringify({ timeMin: $json.starts_at, timeMax: $json.ends_at, items: $('Preparar entrada').first().json.cfg.busy_calendars.map(id => ({ id })) }) }}"),
   iff("Livre no Google?", "={{ $('Preparar entrada').first().json.cfg.busy_calendars.every(id => { const c = ($json.calendars || {})[id]; return !!c && !(c.errors || []).length && !(c.busy || []).length; }) }}"),
   pg("Reservar",
-    "WITH b AS (SELECT agenda.book(p->>'origem', (p->>'starts_at')::timestamptz, 'site:agendar', NULLIF(p->>'phone', ''), NULLIF(p->>'name', ''), NULLIF(p->>'token', ''), NULLIF(p->>'ip', ''), p->'briefing', NULLIF(p->>'ref', '')) AS r FROM (SELECT $1::jsonb AS p) x) SELECT b.r, m.phone, m.lead_name FROM b LEFT JOIN agenda.meetings m ON m.id = (b.r->>'meeting_id')::bigint",
+    "SELECT agenda.book(p->>'origem', (p->>'starts_at')::timestamptz, 'site:agendar', NULLIF(p->>'phone', ''), NULLIF(p->>'name', ''), NULLIF(p->>'token', ''), NULLIF(p->>'ip', ''), p->'briefing', NULLIF(p->>'ref', '')) AS r FROM (SELECT $1::jsonb AS p) x",
     "={{ JSON.stringify({ origem: $('Preparar entrada').first().json.origem, starts_at: $('Montar horário').first().json.starts_at, phone: $('Preparar entrada').first().json.phone, name: $('Preparar entrada').first().json.lead_name, token: $('Preparar entrada').first().json.token, ip: $('Preparar entrada').first().json.ip_hash, briefing: $('Preparar entrada').first().json.briefing, ref: $('Preparar entrada').first().json.ref }) }}"),
   iff("Reservou?", "={{ !!$json.r && $json.r.ok === true }}"),
+  // A separate statement: one that also calls agenda.book() can't see the row book() inserts.
+  pg("Ler reunião",
+    "SELECT p->'r' AS r, m.phone, m.lead_name FROM (SELECT $1::jsonb AS p) x LEFT JOIN agenda.meetings m ON m.id = (p->'r'->>'meeting_id')::bigint",
+    "={{ JSON.stringify({ r: $json.r }) }}"),
   node("Criar evento", "n8n-nodes-base.httpRequest", 4.2, {
     method: "POST",
     url: "=https://www.googleapis.com/calendar/v3/calendars/{{ encodeURIComponent($('Preparar entrada').first().json.cfg.calendar_id) }}/events?conferenceDataVersion=1&sendUpdates=none",
@@ -125,7 +129,7 @@ return [{ json: { valido, starts_at: valido ? new Date(t).toISOString() : '', en
     "SELECT agenda.attach_calendar_event((p->>'mid')::bigint, p->>'eid', NULLIF(p->>'meet', '')) AS a FROM (SELECT $1::jsonb AS p) x",
     "={{ JSON.stringify({ mid: $('Reservar').first().json.r.meeting_id, eid: $json.id, meet: $json.hangoutLink || ((($json.conferenceData || {}).entryPoints || []).find(e => e.entryPointType === 'video') || {}).uri || '' }) }}"),
   code("Montar aviso", `const e = $('Preparar entrada').first().json, h = $('Montar horário').first().json;
-const r = $('Reservar').first().json, ev = $('Criar evento').first().json;
+const r = $('Ler reunião').first().json, ev = $('Criar evento').first().json;
 const meet = ev.hangoutLink || (((ev.conferenceData || {}).entryPoints || []).find(p => p.entryPointType === 'video') || {}).uri || '';
 const b = e.briefing || {};
 const linhas = [
@@ -196,7 +200,8 @@ const connections = {
   "Conferir no Google": { main: branch("Livre no Google?", "Falha no Google") },
   "Livre no Google?": { main: branch("Reservar", "Horário ocupado") },
   "Reservar": { main: to("Reservou?") },
-  "Reservou?": { main: branch("Criar evento", "Recusa da reserva") },
+  "Reservou?": { main: branch("Ler reunião", "Recusa da reserva") },
+  "Ler reunião": { main: to("Criar evento") },
   "Criar evento": { main: branch("Anexar evento", "Cancelar reserva") },
   "Anexar evento": { main: to("Montar aviso") },
   "Montar aviso": { main: to("Registrar aviso (Inbox PsiAtiva)") },
