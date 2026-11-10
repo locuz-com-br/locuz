@@ -290,5 +290,61 @@
     "title": { "pt": "Página não encontrada", "en": "Page not found" },
     "desc": { "pt": "Desculpe, não conseguimos encontrar a página que você está procurando.", "en": "Sorry, we couldn't find the page you're looking for." },
     "btn": { "pt": "Voltar ao Início", "en": "Go to Home" }
+  },
+
+  "agendar": {
+    "meta": {
+      "title": { "pt": "Agendar bate-papo", "en": "Book a call" },
+      "description": { "pt": "Escolha um horário para um bate-papo de 15 minutos com a Locuz, pelo Google Meet.", "en": "Pick a time for a 15-minute call with Locuz on Google Meet." }
+    },
+    "label": { "pt": "Agendar", "en": "Book" },
+    "title": { "pt": "Agende um bate-papo", "en": "Book a call" },
+    "lead": { "pt": "15 minutos pelo Google Meet para entender o momento do seu negócio e ver se faz sentido trabalharmos juntos.", "en": "15 minutes on Google Meet to understand where your business is and see if we're a fit." },
+    "meta_len": { "pt": "15 minutos", "en": "15 minutes" },
+    "meta_where": { "pt": "Google Meet", "en": "Google Meet" },
+    "meta_tz": { "pt": "Horários de Brasília", "en": "Brasília time (UTC−3)" },
+    "grid": {
+      "prev": { "pt": "Mês anterior", "en": "Previous month" },
+      "next": { "pt": "Próximo mês", "en": "Next month" },
+      "times": { "pt": "Horários de {dia}", "en": "Times on {dia}" },
+      "pick_day": { "pt": "Escolha um dia com horário livre.", "en": "Pick a day with open times." },
+      "change": { "pt": "Trocar horário", "en": "Change time" }
+    },
+    "form": {
+      "title": { "pt": "Seus dados", "en": "Your details" },
+      "chosen": { "pt": "Horário escolhido", "en": "Chosen time" },
+      "name": { "pt": "Nome", "en": "Name" },
+      "name_ph": { "pt": "Seu nome", "en": "Your name" },
+      "phone": { "pt": "WhatsApp", "en": "WhatsApp" },
+      "phone_hint": { "pt": "Com DDD. É por lá que confirmamos.", "en": "Brazilian number with area code. We confirm there." },
+      "email": { "pt": "E-mail (opcional)", "en": "E-mail (optional)" },
+      "email_ph": { "pt": "voce@empresa.com.br", "en": "you@company.com" },
+      "submit": { "pt": "Confirmar agendamento", "en": "Confirm booking" },
+      "sending": { "pt": "Agendando…", "en": "Booking…" },
+      "notice": { "pt": "Ao agendar, você concorda com a nossa", "en": "By booking, you agree to our" },
+      "privacy": { "pt": "política de privacidade", "en": "privacy policy" },
+      "err_name": { "pt": "Digite seu nome.", "en": "Enter your name." },
+      "err_phone": { "pt": "Digite um WhatsApp com DDD.", "en": "Enter a WhatsApp number with area code." },
+      "err_email": { "pt": "Confira o e-mail ou deixe em branco.", "en": "Check the e-mail or leave it blank." }
+    },
+    "done": {
+      "title": { "pt": "Agendado!", "en": "You're booked!" },
+      "text": { "pt": "Até {quando}, {nome}. O link do Google Meet:", "en": "See you {quando}, {nome}. Your Google Meet link:" },
+      "no_meet": { "pt": "Vamos te mandar o link do Google Meet pelo WhatsApp.", "en": "We'll send you the Google Meet link on WhatsApp." },
+      "wa": { "pt": "Falar no WhatsApp", "en": "Message us on WhatsApp" }
+    },
+    "st": {
+      "carregando": { "pt": "Buscando horários livres…", "en": "Looking for open times…" },
+      "vazio": { "pt": "Não há horários livres nos próximos dias. Fale com a gente pelo WhatsApp e combinamos um horário.", "en": "No open times in the next few days. Message us on WhatsApp and we'll find one." },
+      "slot_taken": { "pt": "Esse horário acabou de ser ocupado. Escolha outro.", "en": "That time was just taken. Please pick another." },
+      "ja_agendado": { "pt": "Você já tem um bate-papo agendado com a gente. Para trocar o horário, fale pelo WhatsApp.", "en": "You already have a call booked with us. To change it, message us on WhatsApp." },
+      "ja_agendado_ip": { "pt": "Já existe um bate-papo agendado a partir desta conexão. Para outro horário, fale pelo WhatsApp.", "en": "A call is already booked from this connection. For another time, message us on WhatsApp." },
+      "limite": { "pt": "Muitas tentativas por aqui. Fale com a gente pelo WhatsApp.", "en": "Too many attempts. Please message us on WhatsApp." },
+      "desligado": { "pt": "O agendamento online está pausado. Fale com a gente pelo WhatsApp.", "en": "Online booking is paused. Please message us on WhatsApp." },
+      "calendar_error": { "pt": "Não conseguimos consultar a agenda agora. Fale com a gente pelo WhatsApp.", "en": "We couldn't check the calendar right now. Please message us on WhatsApp." },
+      "invalido": { "pt": "Não conseguimos confirmar esse horário. Escolha outro ou tente de novo.", "en": "We couldn't confirm that time. Pick another or try again." },
+      "indisponivel": { "pt": "O agendamento não respondeu. Fale com a gente pelo WhatsApp.", "en": "Booking didn't respond. Please message us on WhatsApp." },
+      "rede": { "pt": "Sem conexão. Confira a internet e tente de novo.", "en": "No connection. Check your internet and try again." }
+    }
   }
 }

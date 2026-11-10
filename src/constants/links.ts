@@ -7,6 +7,7 @@
 // ── Pages ────────────────────────────────────
 export const PAGES = {
   home: "/",
+  agendar: "/agendar",
 } as const;
 
 // ── Section Anchors ──────────────────────────
@@ -39,6 +40,13 @@ export const CONTACT = {
   meet: "https://cal.com/locuz/dep"
 } as const;
 
+// ── Agenda (/agendar) ────────────────────────
+// Public n8n webhook "Locuz — Agenda (/agendar)" (t6B867FMGV9fMrwY). Not a secret:
+// the browser calls it directly; the workflow only answers locuz.com.br origins.
+export const AGENDA = {
+  endpoint: "https://n8n.psiativa.com.br/webhook/locuz-agenda",
+} as const;
+
 // ── Legal / Misc ─────────────────────────────
 export const LEGAL = {
   blog: "/blog",
@@ -54,6 +62,7 @@ const LINKS = {
   socials: SOCIALS,
   contact: CONTACT,
   legal: LEGAL,
+  agenda: AGENDA,
 } as const;
 
 export default LINKS;

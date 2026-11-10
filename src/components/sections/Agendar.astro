@@ -1,0 +1,615 @@
+---
+// /agendar (Sprint 1 F3): month calendar → times → form → confirmation, against the
+// n8n workflow "Locuz — Agenda (/agendar)". Flow adapted from PsiAtiva's Agendar.astro;
+// every rule lives in the workflow and agenda.book(), the page only asks and shows.
+import LINKS from '../../constants/links';
+import translations from '../../data/translations.json';
+
+const A = translations.agendar;
+---
+
+<section class="agendar section">
+  <div class="container">
+    <div
+      id="ag"
+      class="ag-card glass-card"
+      data-step="loading"
+      data-endpoint={LINKS.agenda.endpoint}
+      data-wa={LINKS.socials.whatsapp}
+    >
+      <header class="ag-head">
+        <span class="section-label" data-i18n="agendar.label">{A.label.pt}</span>
+        <h1 id="ag-title" tabindex="-1" data-i18n="agendar.title">{A.title.pt}</h1>
+        <p class="ag-lead" data-i18n="agendar.lead">{A.lead.pt}</p>
+        <ul class="ag-meta">
+          <li>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            <span data-i18n="agendar.meta_len">{A.meta_len.pt}</span>
+          </li>
+          <li>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+            <span data-i18n="agendar.meta_where">{A.meta_where.pt}</span>
+          </li>
+          <li>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 010 20M12 2a15 15 0 000 20"/></svg>
+            <span data-i18n="agendar.meta_tz">{A.meta_tz.pt}</span>
+          </li>
+        </ul>
+      </header>
+
+      <p id="ag-status" class="ag-status" role="status" aria-live="polite">{A.st.carregando.pt}</p>
+
+      <div id="ag-cal" class="ag-cal" hidden>
+        <div class="ag-month-bar">
+          <h2 id="ag-month" class="ag-month"></h2>
+          <div class="ag-nav-group">
+            <button type="button" id="ag-prev" class="ag-nav">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+            </button>
+            <button type="button" id="ag-next" class="ag-nav">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
+            </button>
+          </div>
+        </div>
+        <div id="ag-weekdays" class="ag-weekdays" aria-hidden="true"></div>
+        <div id="ag-days" class="ag-days" role="group"></div>
+        <div id="ag-times" class="ag-times" hidden>
+          <p id="ag-times-title" class="ag-times-title"></p>
+          <div id="ag-slots" class="ag-slots" role="group"></div>
+        </div>
+      </div>
+
+      <form id="ag-form" class="ag-form" novalidate hidden>
+        <div class="ag-chosen">
+          <div>
+            <span class="ag-chosen-label" data-i18n="agendar.form.chosen">{A.form.chosen.pt}</span>
+            <strong id="ag-chosen-text"></strong>
+          </div>
+          <button type="button" id="ag-change" class="ag-link" data-i18n="agendar.grid.change">{A.grid.change.pt}</button>
+        </div>
+        <label class="ag-field">
+          <span data-i18n="agendar.form.name">{A.form.name.pt}</span>
+          <input id="ag-name" name="name" autocomplete="name" maxlength="120" data-i18n-placeholder="agendar.form.name_ph" placeholder={A.form.name_ph.pt} />
+          <small id="ag-name-err" class="ag-err" hidden></small>
+        </label>
+        <label class="ag-field">
+          <span data-i18n="agendar.form.phone">{A.form.phone.pt}</span>
+          <input id="ag-phone" name="phone" type="tel" autocomplete="tel-national" inputmode="tel" maxlength="20" placeholder="(21) 99999-9999" />
+          <small class="ag-hint" data-i18n="agendar.form.phone_hint">{A.form.phone_hint.pt}</small>
+          <small id="ag-phone-err" class="ag-err" hidden></small>
+        </label>
+        <label class="ag-field">
+          <span data-i18n="agendar.form.email">{A.form.email.pt}</span>
+          <input id="ag-email" name="email" type="email" autocomplete="email" inputmode="email" maxlength="160" spellcheck="false" autocapitalize="off" data-i18n-placeholder="agendar.form.email_ph" placeholder={A.form.email_ph.pt} />
+          <small id="ag-email-err" class="ag-err" hidden></small>
+        </label>
+        <p id="ag-form-err" class="ag-form-err" role="alert" hidden></p>
+        <button type="submit" id="ag-submit" class="btn btn-primary ag-submit">{A.form.submit.pt}</button>
+        <p class="ag-notice">
+          <span data-i18n="agendar.form.notice">{A.form.notice.pt}</span>
+          <a href={LINKS.legal.privacy} data-i18n="agendar.form.privacy">{A.form.privacy.pt}</a>.
+        </p>
+      </form>
+
+      <div id="ag-done" class="ag-done" hidden>
+        <div class="ag-done-icon" aria-hidden="true">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+        </div>
+        <h2 id="ag-done-title" tabindex="-1" data-i18n="agendar.done.title">{A.done.title.pt}</h2>
+        <p id="ag-done-text"></p>
+        <a id="ag-meet" class="ag-meet" target="_blank" rel="noopener" hidden></a>
+      </div>
+
+      <a id="ag-wa" class="btn btn-outline ag-wa" target="_blank" rel="noopener" hidden data-i18n="agendar.done.wa">{A.done.wa.pt}</a>
+    </div>
+  </div>
+</section>
+
+<script>
+  import translations from '../../data/translations.json';
+  import {
+    bookingBody, refusalKey, STOP_STATES, normalizePhone, validName, validEmail,
+    hourLabel, dayLabel, monthLabel, slotLabel, weekdayInitials, monthCells, fill, waHref,
+  } from '../../lib/agenda/page.mjs';
+
+  type Lang = 'pt' | 'en';
+  type Slot = { starts_at: string };
+  const A: any = translations.agendar;
+  const root = document.getElementById('ag')!;
+  const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
+  const endpoint = root.dataset.endpoint!;
+  const waBase = root.dataset.wa!;
+
+  const lang = (): Lang => {
+    try {
+      const saved = localStorage.getItem('locuz-lang');
+      if (saved === 'pt' || saved === 'en') return saved;
+    } catch { /* storage blocked */ }
+    return (navigator.language || '').toLowerCase().startsWith('pt') ? 'pt' : 'en';
+  };
+  const t = (path: string, vars?: Record<string, string>) => {
+    const entry = path.split('.').reduce((acc: any, k) => acc?.[k], A);
+    return fill(entry?.[lang()] ?? path, vars);
+  };
+
+  const state = {
+    dias: new Map<string, Slot[]>(),
+    months: [] as string[],
+    month: 0,
+    day: '' as string,
+    slot: null as Slot | null,
+    statusKey: 'st.carregando' as string,
+    stopKey: '' as string,
+    done: null as null | { starts_at: string; meet_url: string | null; name: string },
+    sending: false,
+  };
+
+  function setStep(step: 'loading' | 'cal' | 'form' | 'done' | 'stop') {
+    root.dataset.step = step;
+    $('ag-cal').hidden = step !== 'cal';
+    $('ag-form').hidden = step !== 'form';
+    $('ag-done').hidden = step !== 'done';
+    $('ag-wa').hidden = !(step === 'stop' || step === 'done');
+  }
+
+  async function call(body: object) {
+    const res = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+    return res.json().catch(() => null);
+  }
+
+  function stop(key: string) {
+    state.stopKey = key;
+    state.statusKey = `st.${key}`;
+    setStep('stop');
+    render();
+  }
+
+  async function load(keepStatus = false) {
+    if (!keepStatus) state.statusKey = 'st.carregando';
+    setStep('loading');
+    render();
+    let answer: any;
+    try { answer = await call({ op: 'horarios' }); } catch { return stop('indisponivel'); }
+    if (!answer || answer.ok !== true) return stop(refusalKey(answer) === 'invalido' ? 'indisponivel' : refusalKey(answer));
+    state.dias = new Map((answer.dias || []).filter((d: any) => d.slots?.length).map((d: any) => [d.dia, d.slots]));
+    if (!state.dias.size) return stop('vazio');
+    state.months = [...new Set([...state.dias.keys()].map((d) => d.slice(0, 7)))].sort();
+    state.month = 0;
+    if (!state.dias.has(state.day)) state.day = '';
+    state.slot = null;
+    if (!keepStatus) state.statusKey = 'grid.pick_day';
+    setStep('cal');
+    render();
+  }
+
+  function renderCalendar() {
+    const L = lang();
+    const mes = state.months[state.month];
+    $('ag-month').textContent = monthLabel(mes, L);
+    const prev = $<HTMLButtonElement>('ag-prev'), next = $<HTMLButtonElement>('ag-next');
+    prev.disabled = state.month === 0;
+    next.disabled = state.month >= state.months.length - 1;
+    prev.setAttribute('aria-label', t('grid.prev'));
+    next.setAttribute('aria-label', t('grid.next'));
+    $('ag-weekdays').replaceChildren(...weekdayInitials(L).map((w) => Object.assign(document.createElement('span'), { textContent: w })));
+    const open = new Set(state.dias.keys());
+    $('ag-days').replaceChildren(...monthCells(mes, open).map((cell: any) => {
+      if (!cell) return document.createElement('span');
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'ag-day';
+      b.textContent = String(cell.day);
+      b.disabled = !cell.open;
+      b.setAttribute('aria-label', dayLabel(cell.dia, L));
+      b.setAttribute('aria-pressed', String(cell.dia === state.day));
+      b.addEventListener('click', () => { state.day = cell.dia; render(); $('ag-slots').querySelector('button')?.focus(); });
+      return b;
+    }));
+    const slots = state.dias.get(state.day);
+    $('ag-times').hidden = !slots;
+    if (slots) {
+      $('ag-times-title').textContent = t('grid.times', { dia: dayLabel(state.day, L) });
+      $('ag-slots').replaceChildren(...slots.map((s) => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'ag-slot';
+        b.textContent = hourLabel(s.starts_at, L);
+        b.setAttribute('aria-label', slotLabel(s.starts_at, L));
+        b.addEventListener('click', () => {
+          state.slot = s;
+          state.statusKey = '';
+          setStep('form');
+          render();
+          $<HTMLInputElement>('ag-name').focus();
+        });
+        return b;
+      }));
+    }
+  }
+
+  function render() {
+    const L = lang();
+    $('ag-status').textContent = state.statusKey ? t(state.statusKey) : '';
+    $('ag-status').hidden = !state.statusKey;
+    if (root.dataset.step === 'cal') renderCalendar();
+    if (state.slot) $('ag-chosen-text').textContent = slotLabel(state.slot.starts_at, L);
+    $('ag-submit').textContent = t(state.sending ? 'form.sending' : 'form.submit');
+    const wa = $<HTMLAnchorElement>('ag-wa');
+    wa.href = waHref(waBase, state.stopKey || 'done');
+    wa.textContent = t('done.wa');
+    if (state.done) {
+      const d = state.done;
+      $('ag-done-text').textContent = d.meet_url
+        ? t('done.text', { quando: slotLabel(d.starts_at, L), nome: d.name.split(' ')[0] })
+        : `${t('done.text', { quando: slotLabel(d.starts_at, L), nome: d.name.split(' ')[0] }).replace(/[:：]\s*$/, '.')} ${t('done.no_meet')}`;
+      const meet = $<HTMLAnchorElement>('ag-meet');
+      meet.hidden = !d.meet_url;
+      if (d.meet_url) { meet.href = d.meet_url; meet.textContent = d.meet_url.replace(/^https:\/\//, ''); }
+    }
+  }
+
+  function fieldError(id: string, key: string | null) {
+    const el = $(id);
+    el.hidden = !key;
+    el.textContent = key ? t(key) : '';
+    const input = el.parentElement?.querySelector('input');
+    input?.setAttribute('aria-invalid', String(!!key));
+  }
+
+  $('ag-prev').addEventListener('click', () => { state.month = Math.max(0, state.month - 1); render(); });
+  $('ag-next').addEventListener('click', () => { state.month = Math.min(state.months.length - 1, state.month + 1); render(); });
+  $('ag-change').addEventListener('click', () => { state.slot = null; state.statusKey = 'grid.pick_day'; setStep('cal'); render(); });
+
+  $<HTMLFormElement>('ag-form').addEventListener('submit', async (event) => {
+    event.preventDefault();
+    if (state.sending || !state.slot) return;
+    const name = $<HTMLInputElement>('ag-name').value;
+    const phone = $<HTMLInputElement>('ag-phone').value;
+    const email = $<HTMLInputElement>('ag-email').value;
+    const errors = {
+      'ag-name-err': validName(name) ? null : 'form.err_name',
+      'ag-phone-err': normalizePhone(phone) ? null : 'form.err_phone',
+      'ag-email-err': validEmail(email) ? null : 'form.err_email',
+    };
+    for (const [id, key] of Object.entries(errors)) fieldError(id, key);
+    const firstBad = Object.entries(errors).find(([, key]) => key);
+    if (firstBad) { $(firstBad[0]).parentElement?.querySelector('input')?.focus(); return; }
+
+    const formErr = $('ag-form-err');
+    formErr.hidden = true;
+    state.sending = true;
+    render();
+    let answer: any;
+    try {
+      answer = await call(bookingBody({ startsAt: state.slot.starts_at, name, phone, email }));
+    } catch {
+      state.sending = false;
+      formErr.textContent = t('st.rede');
+      formErr.hidden = false;
+      return render();
+    }
+    state.sending = false;
+    if (answer?.ok === true) {
+      state.done = { starts_at: answer.starts_at || state.slot.starts_at, meet_url: answer.meet_url || null, name: name.trim() };
+      state.stopKey = 'done';
+      state.statusKey = '';
+      setStep('done');
+      render();
+      return $('ag-done-title').focus();
+    }
+    const key = refusalKey(answer);
+    if (key === 'slot_taken') { state.statusKey = 'st.slot_taken'; state.slot = null; return load(true); }
+    if (STOP_STATES.has(key)) return stop(key);
+    formErr.textContent = t(`st.${key}`);
+    formErr.hidden = false;
+    render();
+  });
+
+  // The site's i18n toggle rewrites [data-i18n]; the dynamic parts are re-rendered here.
+  for (const id of ['lang-toggle', 'lang-toggle-mobile']) {
+    document.getElementById(id)?.addEventListener('click', () => setTimeout(render, 0));
+  }
+
+  load();
+</script>
+
+<!-- Global: the day and time buttons are created by the script, so Astro's scoped
+     styles would never reach them. Every selector is prefixed .ag- / .agendar. -->
+<style is:global>
+  .agendar {
+    padding-top: calc(var(--section-padding) + 3rem);
+    min-height: 100vh;
+  }
+
+  .ag-card {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: clamp(1.5rem, 4vw, 2.5rem);
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .ag-head h1 {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 5vw, 2.75rem);
+    line-height: 1.1;
+    margin: 0.5rem 0 0.75rem;
+    outline: none;
+  }
+
+  .ag-lead {
+    color: var(--color-text-secondary);
+    margin: 0 0 1rem;
+  }
+
+  .ag-meta {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+    color: var(--color-text-secondary);
+    font-size: 0.875rem;
+  }
+
+  .ag-meta li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .ag-meta svg { color: var(--color-accent); }
+
+  .ag-status {
+    margin: 0;
+    color: var(--color-text-secondary);
+    font-size: 0.95rem;
+  }
+
+  .ag-card[data-step="stop"] .ag-status {
+    color: var(--color-text);
+    padding: 1rem 1.25rem;
+    border-radius: var(--radius-md);
+    background: var(--color-bg-alt);
+    border: 1px solid var(--color-border);
+  }
+
+  .ag-month-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+  }
+
+  .ag-month {
+    font-family: var(--font-subtitle);
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin: 0;
+    text-transform: capitalize;
+  }
+
+  .ag-nav-group { display: flex; gap: 0.25rem; }
+
+  .ag-nav {
+    width: 2.25rem;
+    height: 2.25rem;
+    display: grid;
+    place-items: center;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--color-border);
+    background: transparent;
+    color: var(--color-text);
+    cursor: pointer;
+    transition: border-color var(--transition-fast), opacity var(--transition-fast);
+  }
+
+  .ag-nav:hover:not(:disabled) { border-color: var(--color-border-hover); }
+  .ag-nav:disabled { opacity: 0.3; cursor: default; }
+
+  .ag-weekdays,
+  .ag-days {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 0.35rem;
+    text-align: center;
+  }
+
+  .ag-weekdays span {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-text-muted);
+    padding-bottom: 0.25rem;
+  }
+
+  .ag-days { justify-items: center; }
+
+  .ag-day {
+    width: min(100%, 3rem);
+    aspect-ratio: 1;
+    min-height: 2.5rem;
+    border-radius: var(--radius-md);
+    border: 1px solid transparent;
+    background: var(--color-accent-glow);
+    color: var(--color-text);
+    font: 600 0.95rem var(--font-body);
+    cursor: pointer;
+    transition: background var(--transition-fast), border-color var(--transition-fast);
+  }
+
+  .ag-day:hover:not(:disabled) { border-color: var(--color-accent); }
+
+  .ag-day:disabled {
+    background: transparent;
+    color: var(--color-text-muted);
+    font-weight: 400;
+    cursor: default;
+  }
+
+  .ag-day[aria-pressed="true"] {
+    background: var(--color-accent);
+    color: #fff;
+  }
+
+  .ag-times { margin-top: 1.5rem; }
+
+  .ag-times-title {
+    margin: 0 0 0.75rem;
+    font-weight: 600;
+  }
+
+  .ag-slots {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(5.5rem, 1fr));
+    gap: 0.5rem;
+  }
+
+  .ag-slot {
+    padding: 0.65rem 0.5rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border-hover);
+    background: var(--color-bg-card);
+    color: var(--color-text);
+    font: 600 0.95rem var(--font-body);
+    cursor: pointer;
+    transition: border-color var(--transition-fast), background var(--transition-fast);
+  }
+
+  .ag-slot:hover { border-color: var(--color-accent); background: var(--color-accent-glow); }
+
+  .ag-day:focus-visible,
+  .ag-slot:focus-visible,
+  .ag-nav:focus-visible,
+  .ag-link:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  .ag-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .ag-chosen {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.9rem 1.1rem;
+    border-radius: var(--radius-md);
+    background: var(--color-accent-glow);
+  }
+
+  .ag-chosen-label {
+    display: block;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-text-secondary);
+  }
+
+  .ag-link {
+    background: none;
+    border: 0;
+    padding: 0;
+    color: var(--color-accent);
+    font: 600 0.9rem var(--font-body);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .ag-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+
+  .ag-field input {
+    padding: 0.75rem 0.9rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border-hover);
+    background: var(--color-bg-card);
+    color: var(--color-text);
+    font: 400 1rem var(--font-body);
+  }
+
+  .ag-field input:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px var(--color-accent-glow);
+  }
+
+  .ag-field input[aria-invalid="true"] { border-color: #c2410c; }
+
+  .ag-hint {
+    color: var(--color-text-muted);
+    font-weight: 400;
+  }
+
+  .ag-err,
+  .ag-form-err {
+    color: #c2410c;
+    font-weight: 500;
+  }
+
+  .ag-form-err { margin: 0; }
+
+  .ag-submit {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .ag-submit:disabled { opacity: 0.6; }
+
+  .ag-notice {
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    text-align: center;
+  }
+
+  .ag-notice a { color: inherit; text-decoration: underline; }
+
+  .ag-done { text-align: center; }
+
+  .ag-done-icon {
+    width: 3.5rem;
+    height: 3.5rem;
+    margin: 0 auto 1rem;
+    display: grid;
+    place-items: center;
+    border-radius: var(--radius-full);
+    background: var(--color-accent);
+    color: #fff;
+  }
+
+  .ag-done h2 {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    margin: 0 0 0.5rem;
+    outline: none;
+  }
+
+  .ag-done p { color: var(--color-text-secondary); margin: 0 0 0.75rem; }
+
+  .ag-meet {
+    font-weight: 600;
+    color: var(--color-accent);
+    word-break: break-all;
+  }
+
+  .ag-wa { align-self: center; }
+
+  @media (max-width: 480px) {
+    .ag-days { gap: 0.25rem; }
+    .ag-day { min-height: 2.25rem; font-size: 0.9rem; }
+  }
+</style>

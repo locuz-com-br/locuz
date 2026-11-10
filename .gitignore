@@ -53,3 +53,6 @@ env
 .env.prod
 .env.dev
 !.env.example
+
+# /agendar screenshots (scripts/agendar-screens.mjs)
+.screens/

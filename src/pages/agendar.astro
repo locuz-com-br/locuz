@@ -1,0 +1,12 @@
+---
+// /agendar (Sprint 1 F3). Ships dark: noindex and linked from no CTA until F6.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Agendar from '../components/sections/Agendar.astro';
+import translations from '../data/translations.json';
+
+const meta = translations.agendar.meta;
+---
+
+<BaseLayout title={meta.title.pt} description={meta.description.pt} noindex={true}>
+  <Agendar />
+</BaseLayout>
