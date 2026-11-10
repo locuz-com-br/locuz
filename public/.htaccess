@@ -1,3 +1,6 @@
+# Serve text (HTML, llms.txt, robots.txt) as UTF-8 so PT-BR accents decode correctly.
+AddDefaultCharset UTF-8
+
 <IfModule mod_rewrite.c>
   RewriteEngine On
 
