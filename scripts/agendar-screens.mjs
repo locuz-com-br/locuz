@@ -23,15 +23,16 @@ const DIAS = [
 ];
 const HORARIOS = { ok: true, minutes: 15, timezone: "America/Sao_Paulo", dias: DIAS };
 
-async function shot(browser, { name, width, lang = "pt", theme = "light", horarios = HORARIOS, agendar, steps }) {
+async function shot(browser, { name, width, lang = "pt", theme = "light", horarios = HORARIOS, agendar, steps, path = "/agendar/", handoff = null }) {
   const page = await browser.newPage({ viewport: { width, height: width < 600 ? 844 : 900 }, locale: lang === "pt" ? "pt-BR" : "en-US" });
   const errors = [];
   page.on("console", (m) => m.type() === "error" && errors.push(m.text().slice(0, 160)));
   page.on("pageerror", (e) => errors.push(String(e).slice(0, 160)));
-  await page.addInitScript(([l, th]) => {
+  await page.addInitScript(([l, th, h]) => {
     localStorage.setItem("locuz-lang", l);
     if (th === "dark") localStorage.setItem("locuz-theme", "dark");
-  }, [lang, theme]);
+    if (h) sessionStorage.setItem("locuz-handoff", JSON.stringify(h));
+  }, [lang, theme, handoff]);
   const sent = [];
   await page.route("**/webhook/locuz-agenda", async (route) => {
     const body = JSON.parse(route.request().postData() || "{}");
@@ -39,7 +40,7 @@ async function shot(browser, { name, width, lang = "pt", theme = "light", horari
     const answer = body.op === "horarios" ? horarios : agendar;
     await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(answer) });
   });
-  await page.goto(`${BASE}/agendar/`, { waitUntil: "networkidle" });
+  await page.goto(`${BASE}${path}`, { waitUntil: "networkidle" });
   await page.waitForSelector('#ag[data-step]:not([data-step="loading"])');
   for (const step of steps || []) await step(page);
   await page.evaluate(() => window.scrollTo(0, 0)); // the fixed navbar would cover the card mid-page
@@ -71,5 +72,13 @@ for (const width of [390, 1440]) {
   await shot(browser, { name: `${width}-5-stop-vazio-pt`, width, horarios: { ok: true, dias: [] } });
   await shot(browser, { name: `${width}-6-slot-taken-pt`, width, agendar: { ok: false, reason: "slot_taken" },
     steps: [pickDay("2026-11-17"), pickSlot, fill("Ana Souza", "21965192607", ""), submit] });
+  // F5 + screen edits
+  await shot(browser, { name: `${width}-7-form-pt`, width, steps: [pickDay("2026-11-17"), pickSlot] });
+  const soon = { ...done, starts_at: new Date(Date.now() + 5 * 60_000).toISOString() };
+  await shot(browser, { name: `${width}-8-done-join-pt`, width, agendar: soon,
+    steps: [pickDay("2026-11-17"), pickSlot, fill("Ana Souza", "(21) 96519-2607", ""), submit] });
+  await shot(browser, { name: `${width}-9-from-contato-pt`, width, path: "/agendar/?ref=k3f9q2xa", agendar: done,
+    handoff: { ref: "k3f9q2xa", name: "Ana Souza", phone: "(21) 96519-2607", email: "ana@empresa.com", briefing: { orcamento: "R$ 51.000 a R$ 100.000", prazo: "1 mês" } },
+    steps: [pickDay("2026-11-17"), pickSlot, submit] });
 }
 await browser.close();

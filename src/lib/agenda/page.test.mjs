@@ -69,3 +69,43 @@ test("fill and waHref", () => {
   // The confirmation screen must not pre-fill a failure message.
   assert.equal(new URL(waHref("https://wa.me/1", "done")).searchParams.get("text"), "Olá! Acabei de agendar um bate-papo pelo site.");
 });
+
+// ── F5 ──
+import { newRef, validRef, saveHandoff, readHandoff, meetAction } from "./page.mjs";
+
+const memStorage = () => { const m = new Map(); return { setItem: (k, v) => m.set(k, v), getItem: (k) => m.get(k) ?? null }; };
+
+test("newRef is 8 chars from a lookalike-free alphabet and passes validRef", () => {
+  const ref = newRef();
+  assert.match(ref, /^[a-hjkmnp-z2-9]{8}$/);
+  assert.ok(validRef(ref));
+  assert.equal(validRef("../x"), false);
+  assert.equal(validRef(""), false);
+});
+
+test("readHandoff returns the saved data only for its own ref", () => {
+  const s = memStorage();
+  saveHandoff(s, { ref: "abc12345", name: "Ana" });
+  assert.equal(readHandoff(s, "abc12345").name, "Ana");
+  assert.equal(readHandoff(s, "zzz99999"), null);
+  assert.equal(readHandoff(s, "bad ref"), null);
+  assert.equal(readHandoff({ getItem: () => { throw new Error("blocked"); } }, "abc12345"), null);
+  saveHandoff({ setItem: () => { throw new Error("blocked"); } }, { ref: "x" }); // must not throw
+});
+
+test("meetAction: copy until 10 min before, join until the end, copy after", () => {
+  const start = "2026-11-17T13:00:00.000Z";
+  const at = (iso) => Date.parse(iso);
+  assert.equal(meetAction(start, 15, at("2026-11-17T12:49:59Z")), "copy");
+  assert.equal(meetAction(start, 15, at("2026-11-17T12:50:00Z")), "join");
+  assert.equal(meetAction(start, 15, at("2026-11-17T13:14:59Z")), "join");
+  assert.equal(meetAction(start, 15, at("2026-11-17T13:15:00Z")), "copy");
+  assert.equal(meetAction("nope", 15), "copy");
+});
+
+test("bookingBody merges a /contato briefing with the e-mail", () => {
+  const body = bookingBody({ startsAt: "x", name: "Ana", phone: "21965192607", email: "A@b.co", ref: "abc12345", briefing: { orcamento: "R$ 51.000 a R$ 100.000" } });
+  assert.deepEqual(body.briefing, { orcamento: "R$ 51.000 a R$ 100.000", email: "a@b.co" });
+  assert.equal(body.ref, "abc12345");
+  assert.equal(bookingBody({ startsAt: "x", name: "Ana", phone: "21965192607" }).briefing, undefined);
+});

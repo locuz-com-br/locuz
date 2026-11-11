@@ -14,14 +14,15 @@ const BASE = `http://127.0.0.1:${process.env.PORT || 4329}`;
 const OUT = new URL("../.screens/contato/", import.meta.url).pathname;
 mkdirSync(OUT, { recursive: true });
 
-async function shot(browser, { name, width, lang = "pt", theme = "light", capture = [200, { ok: true, lead_id: "LOCUZ-0001" }], web3 = [200, { success: true }], steps }) {
+async function shot(browser, { name, width, lang = "pt", theme = "light", capture = [200, { ok: true, lead_id: "LOCUZ-0001" }], web3 = [200, { success: true }], steps, path = "/contato/", handoff = null }) {
   const page = await browser.newPage({ viewport: { width, height: width < 600 ? 844 : 900 }, locale: lang === "pt" ? "pt-BR" : "en-US" });
   const errors = [];
   page.on("console", (m) => m.type() === "error" && errors.push(m.text().slice(0, 160)));
   page.on("pageerror", (e) => errors.push(String(e).slice(0, 160)));
-  await page.addInitScript(([l, th]) => {
+  await page.addInitScript(([l, th, h]) => {
     localStorage.setItem("locuz-lang", l);
     if (th === "dark") localStorage.setItem("locuz-theme", "dark");
+    if (h) sessionStorage.setItem("locuz-handoff", JSON.stringify(h));
     window.hcaptcha = {
       render: (id, o) => {
         const box = document.getElementById(id);
@@ -32,7 +33,7 @@ async function shot(browser, { name, width, lang = "pt", theme = "light", captur
       },
       reset: () => {},
     };
-  }, [lang, theme]);
+  }, [lang, theme, handoff]);
   const sent = [];
   await page.route("**/webhook/locuz-capture", async (route) => {
     sent.push(["n8n", JSON.parse(route.request().postData() || "{}")]);
@@ -42,7 +43,7 @@ async function shot(browser, { name, width, lang = "pt", theme = "light", captur
     sent.push(["web3forms", JSON.parse(route.request().postData() || "{}").fallback]);
     await route.fulfill({ status: web3[0], contentType: "application/json", body: JSON.stringify(web3[1]) });
   });
-  await page.goto(`${BASE}/contato/`, { waitUntil: "networkidle" });
+  await page.goto(`${BASE}${path}`, { waitUntil: "networkidle" });
   for (const step of steps || []) await step(page);
   await page.evaluate(() => window.scrollTo(0, 0)); // the fixed navbar would cover the card mid-page
   await page.waitForTimeout(400);
@@ -72,6 +73,9 @@ for (const width of [390, 1440]) {
   await shot(browser, { name: `${width}-6-done-pt`, width, steps: [...toContact, ana, next] });
   await shot(browser, { name: `${width}-7-headcount-en-dark`, width, lang: "en", theme: "dark", steps: [project("New website")] });
   await shot(browser, { name: `${width}-8-fallback-done-pt`, width, capture: [503, { ok: false, error: "storage_unavailable" }], steps: [...toContact, ana, next] });
+  const fromBooking = { path: "/contato/?ref=k3f9q2xa", handoff: { ref: "k3f9q2xa", booked: true, name: "Ana Souza", phone: "(21) 96519-2607", email: "" } };
+  await shot(browser, { name: `${width}-10-after-booking-contact-pt`, width, ...fromBooking, steps: toContact });
+  await shot(browser, { name: `${width}-11-after-booking-done-pt`, width, ...fromBooking, steps: [...toContact, next] });
   await shot(browser, { name: `${width}-9-error-pt`, width, capture: [503, null], web3: [500, { success: false }], steps: [...toContact, ana, next] });
 }
 await browser.close();

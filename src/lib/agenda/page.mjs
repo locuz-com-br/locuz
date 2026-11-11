@@ -22,10 +22,12 @@ export const validEmail = (raw) => {
 };
 
 /** The `agendar` request. E-mail rides in the briefing (no column for it in db_locuz). */
-export function bookingBody({ startsAt, name, phone, email, ref }) {
+export function bookingBody({ startsAt, name, phone, email, ref, briefing }) {
   const body = { op: "agendar", starts_at: startsAt, lead_name: String(name || "").trim(), phone: normalizePhone(phone) || "" };
   const mail = String(email || "").trim();
-  if (mail) body.briefing = { email: mail.toLowerCase() };
+  // A briefing sent from /contato first (F5) rides along, so Juan's notice shows it.
+  const extra = briefing && typeof briefing === "object" ? briefing : {};
+  if (mail || Object.keys(extra).length) body.briefing = { ...extra, ...(mail ? { email: mail.toLowerCase() } : {}) };
   if (ref) body.ref = String(ref).slice(0, 64);
   return body;
 }
@@ -129,4 +131,43 @@ export function waHref(base, key) {
   try { url = new URL(base); } catch { return base; }
   url.searchParams.set("text", WA_TEXT[key] || WA_FALLBACK);
   return url.toString();
+}
+
+// ── F5: the handoff between /agendar and /contato ────────────────────────────
+// Both pages share one `ref` (meetings.ref on a booking, source_detail "ref:…" on a
+// capture). Contact data rides in sessionStorage, never in the URL.
+
+const HANDOFF_KEY = "locuz-handoff";
+
+/** Short random ref, e.g. "k3f9q2xa". */
+export function newRef(random = Math.random) {
+  const abc = "abcdefghjkmnpqrstuvwxyz23456789";
+  return Array.from({ length: 8 }, () => abc[Math.floor(random() * abc.length)]).join("");
+}
+
+export const validRef = (raw) => /^[a-z0-9]{6,32}$/.test(String(raw || ""));
+
+/** Save { ref, name, phone, email, booked?, briefing? }; storage failures are ignored. */
+export function saveHandoff(storage, data) {
+  try { storage.setItem(HANDOFF_KEY, JSON.stringify(data)); } catch { /* storage blocked */ }
+}
+
+/** The saved handoff only when it belongs to `ref`, else null. */
+export function readHandoff(storage, ref) {
+  if (!validRef(ref)) return null;
+  try {
+    const data = JSON.parse(storage.getItem(HANDOFF_KEY) || "null");
+    return data && data.ref === ref ? data : null;
+  } catch {
+    return null;
+  }
+}
+
+const JOIN_BEFORE_MS = 10 * 60_000;
+
+/** "join" from 10 min before the start until the end of the meeting, else "copy". */
+export function meetAction(startsAt, minutes, now = Date.now()) {
+  const start = new Date(startsAt).getTime();
+  if (Number.isNaN(start)) return "copy";
+  return now >= start - JOIN_BEFORE_MS && now < start + minutes * 60_000 ? "join" : "copy";
 }

@@ -73,3 +73,18 @@ test("Montar aviso reads name and phone from Ler reunião, not from the statemen
   assert.match(aviso.texto, /👤 Ana · \+5521900000000/);
   assert.match(aviso.texto, /wa\.me\/5521900000000/);
 });
+
+test("Montar aviso says when there is no briefing yet, and shows it when /contato came first", () => {
+  const inputs = (briefing) => ({
+    "Preparar entrada": { origem: "publico", cfg, ref: "abc12345", briefing },
+    "Montar horário": { label: "terça, 17/11 às 10:00" },
+    "Ler reunião": { r: { ok: true, meeting_id: 1 }, phone: "5521900000000", lead_name: "Ana" },
+    "Criar evento": { hangoutLink: "https://meet.google.com/x" },
+  });
+  const sem = run("Montar aviso", inputs({ email: "a@b.co" })).texto;
+  assert.match(sem, /📝 Briefing: ainda não/);
+  assert.match(sem, /🔗 ref abc12345/);
+  const com = run("Montar aviso", inputs({ orcamento: "R$ 51.000 a R$ 100.000", prazo: "1 mês" })).texto;
+  assert.doesNotMatch(com, /ainda não/);
+  assert.match(com, /• orcamento: R\$ 51\.000 a R\$ 100\.000/);
+});

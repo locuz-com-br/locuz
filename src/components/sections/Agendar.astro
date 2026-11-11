@@ -60,13 +60,13 @@ const A = translations.agendar;
       </div>
 
       <form id="ag-form" class="ag-form" novalidate hidden>
-        <div class="ag-chosen">
-          <div>
+        <button type="button" id="ag-chosen" class="ag-chosen">
+          <span>
             <span class="ag-chosen-label" data-i18n="agendar.form.chosen">{A.form.chosen.pt}</span>
             <strong id="ag-chosen-text"></strong>
-          </div>
-          <button type="button" id="ag-change" class="ag-link" data-i18n="agendar.grid.change">{A.grid.change.pt}</button>
-        </div>
+          </span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3l4 4-4 4"/><path d="M3 11V9a2 2 0 012-2h16"/><path d="M7 21l-4-4 4-4"/><path d="M21 13v2a2 2 0 01-2 2H3"/></svg>
+        </button>
         <label class="ag-field">
           <span data-i18n="agendar.form.name">{A.form.name.pt}</span>
           <input id="ag-name" name="name" autocomplete="name" maxlength="120" data-i18n-placeholder="agendar.form.name_ph" placeholder={A.form.name_ph.pt} />
@@ -85,6 +85,7 @@ const A = translations.agendar;
         </label>
         <p id="ag-form-err" class="ag-form-err" role="alert" hidden></p>
         <button type="submit" id="ag-submit" class="btn btn-primary ag-submit">{A.form.submit.pt}</button>
+        <button type="button" id="ag-change" class="btn btn-outline ag-submit" data-i18n="agendar.grid.change">{A.grid.change.pt}</button>
         <p class="ag-notice">
           <span data-i18n="agendar.form.notice">{A.form.notice.pt}</span>
           <a href={LINKS.legal.privacy} data-i18n="agendar.form.privacy">{A.form.privacy.pt}</a>.
@@ -97,7 +98,13 @@ const A = translations.agendar;
         </div>
         <h2 id="ag-done-title" tabindex="-1" data-i18n="agendar.done.title">{A.done.title.pt}</h2>
         <p id="ag-done-text"></p>
-        <a id="ag-meet" class="ag-meet" target="_blank" rel="noopener" hidden></a>
+        <button type="button" id="ag-copy" class="btn btn-primary ag-meet-btn" hidden>{A.done.copy.pt}</button>
+        <a id="ag-join" class="btn btn-primary ag-meet-btn" target="_blank" rel="noopener" hidden data-i18n="agendar.done.join">{A.done.join.pt}</a>
+        <div id="ag-brief" class="ag-brief" hidden>
+          <strong data-i18n="agendar.done.brief_title">{A.done.brief_title.pt}</strong>
+          <p data-i18n="agendar.done.brief_text">{A.done.brief_text.pt}</p>
+          <a id="ag-brief-link" href={LINKS.pages.contato} class="btn btn-outline" data-i18n="agendar.done.brief_cta">{A.done.brief_cta.pt}</a>
+        </div>
       </div>
 
       <a id="ag-wa" class="btn btn-outline ag-wa" target="_blank" rel="noopener" hidden data-i18n="agendar.done.wa">{A.done.wa.pt}</a>
@@ -110,6 +117,7 @@ const A = translations.agendar;
   import {
     bookingBody, refusalKey, STOP_STATES, normalizePhone, validName, validEmail,
     hourLabel, dayLabel, monthLabel, slotLabel, weekdayInitials, monthCells, fill, waHref,
+    newRef, validRef, saveHandoff, readHandoff, meetAction,
   } from '../../lib/agenda/page.mjs';
 
   type Lang = 'pt' | 'en';
@@ -142,7 +150,18 @@ const A = translations.agendar;
     stopKey: '' as string,
     done: null as null | { starts_at: string; meet_url: string | null; name: string },
     sending: false,
+    copied: false,
   };
+
+  // F5: arriving from /contato?…→ /agendar?ref=… brings the contact data and the briefing.
+  const urlRef = new URLSearchParams(location.search).get('ref') || '';
+  const handoff = readHandoff(sessionStorage, urlRef);
+  const ref = handoff ? urlRef : newRef();
+  if (handoff) {
+    $<HTMLInputElement>('ag-name').value = handoff.name || '';
+    $<HTMLInputElement>('ag-phone').value = handoff.phone || '';
+    $<HTMLInputElement>('ag-email').value = handoff.email || '';
+  }
 
   function setStep(step: 'loading' | 'cal' | 'form' | 'done' | 'stop') {
     root.dataset.step = step;
@@ -232,7 +251,10 @@ const A = translations.agendar;
     $('ag-status').textContent = state.statusKey ? t(state.statusKey) : '';
     $('ag-status').hidden = !state.statusKey;
     if (root.dataset.step === 'cal') renderCalendar();
-    if (state.slot) $('ag-chosen-text').textContent = slotLabel(state.slot.starts_at, L);
+    if (state.slot) {
+      $('ag-chosen-text').textContent = slotLabel(state.slot.starts_at, L);
+      $('ag-chosen').setAttribute('aria-label', `${t('form.chosen')}: ${slotLabel(state.slot.starts_at, L)}. ${t('grid.change')}`);
+    }
     $('ag-submit').textContent = t(state.sending ? 'form.sending' : 'form.submit');
     const wa = $<HTMLAnchorElement>('ag-wa');
     wa.href = waHref(waBase, state.stopKey || 'done');
@@ -242,9 +264,16 @@ const A = translations.agendar;
       $('ag-done-text').textContent = d.meet_url
         ? t('done.text', { quando: slotLabel(d.starts_at, L), nome: d.name.split(' ')[0] })
         : `${t('done.text', { quando: slotLabel(d.starts_at, L), nome: d.name.split(' ')[0] }).replace(/[:：]\s*$/, '.')} ${t('done.no_meet')}`;
-      const meet = $<HTMLAnchorElement>('ag-meet');
-      meet.hidden = !d.meet_url;
-      if (d.meet_url) { meet.href = d.meet_url; meet.textContent = d.meet_url.replace(/^https:\/\//, ''); }
+      const join = !!d.meet_url && meetAction(d.starts_at, 15) === 'join';
+      const copy = $<HTMLButtonElement>('ag-copy');
+      copy.hidden = !d.meet_url || join;
+      copy.textContent = t(state.copied ? 'done.copied' : 'done.copy');
+      const joinA = $<HTMLAnchorElement>('ag-join');
+      joinA.hidden = !join;
+      if (d.meet_url) joinA.href = d.meet_url;
+      // Already briefed on /contato → no second ask.
+      $('ag-brief').hidden = !!handoff?.briefing;
+      $<HTMLAnchorElement>('ag-brief-link').href = `/contato?ref=${ref}`;
     }
   }
 
@@ -258,7 +287,20 @@ const A = translations.agendar;
 
   $('ag-prev').addEventListener('click', () => { state.month = Math.max(0, state.month - 1); render(); });
   $('ag-next').addEventListener('click', () => { state.month = Math.min(state.months.length - 1, state.month + 1); render(); });
-  $('ag-change').addEventListener('click', () => { state.slot = null; state.statusKey = 'grid.pick_day'; setStep('cal'); render(); });
+  const changeSlot = () => { state.slot = null; state.statusKey = 'grid.pick_day'; setStep('cal'); render(); };
+  $('ag-chosen').addEventListener('click', changeSlot);
+  $('ag-change').addEventListener('click', changeSlot);
+
+  $('ag-copy').addEventListener('click', async () => {
+    const url = state.done?.meet_url;
+    if (!url) return;
+    try { await navigator.clipboard.writeText(url); } catch { return void window.open(url, '_blank', 'noopener'); }
+    state.copied = true;
+    render();
+    setTimeout(() => { state.copied = false; render(); }, 2500);
+  });
+  // "Copiar link" turns into "Entrar no bate-papo" 10 min before the start.
+  setInterval(() => { if (state.done) render(); }, 30_000);
 
   $<HTMLFormElement>('ag-form').addEventListener('submit', async (event) => {
     event.preventDefault();
@@ -281,7 +323,7 @@ const A = translations.agendar;
     render();
     let answer: any;
     try {
-      answer = await call(bookingBody({ startsAt: state.slot.starts_at, name, phone, email }));
+      answer = await call(bookingBody({ startsAt: state.slot.starts_at, name, phone, email, ref, briefing: handoff?.briefing }));
     } catch {
       state.sending = false;
       formErr.textContent = t('st.rede');
@@ -291,6 +333,7 @@ const A = translations.agendar;
     state.sending = false;
     if (answer?.ok === true) {
       state.done = { starts_at: answer.starts_at || state.slot.starts_at, meet_url: answer.meet_url || null, name: name.trim() };
+      saveHandoff(sessionStorage, { ref, name: name.trim(), phone, email, booked: true, briefing: handoff?.briefing });
       state.stopKey = 'done';
       state.statusKey = '';
       setStep('done');
@@ -495,6 +538,13 @@ const A = translations.agendar;
   }
 
   .ag-chosen {
+    width: 100%;
+    border: 1px solid transparent;
+    color: var(--color-text);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color var(--transition-fast);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -511,6 +561,10 @@ const A = translations.agendar;
     letter-spacing: 0.04em;
     color: var(--color-text-secondary);
   }
+
+  .ag-chosen:hover { border-color: var(--color-accent); }
+  .ag-chosen:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+  .ag-chosen svg { color: var(--color-accent); flex: none; }
 
   .ag-link {
     background: none;
@@ -600,11 +654,21 @@ const A = translations.agendar;
 
   .ag-done p { color: var(--color-text-secondary); margin: 0 0 0.75rem; }
 
-  .ag-meet {
-    font-weight: 600;
-    color: var(--color-accent);
-    word-break: break-all;
+  .ag-meet-btn { min-width: 14rem; justify-content: center; }
+
+  .ag-brief {
+    margin-top: 1.5rem;
+    padding: 1.25rem;
+    border-radius: var(--radius-md);
+    background: var(--color-accent-glow);
+    border: 1px solid var(--color-accent);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
   }
+
+  .ag-done .ag-brief p { margin: 0 0 0.5rem; }
 
   .ag-wa { align-self: center; }
 

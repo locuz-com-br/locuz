@@ -61,6 +61,7 @@ const sitekey = import.meta.env.PUBLIC_HCAPTCHA_SITE_KEY || '';
 
         <fieldset class="ct-step" data-step="contact" hidden>
           <legend class="ct-q" tabindex="-1" data-i18n="contato.q.contact">{C.q.contact.pt}</legend>
+          <p id="ct-as" class="ct-as" hidden></p>
           <label class="ct-field">
             <span data-i18n="contato.form.name">{C.form.name.pt}</span>
             <input id="ct-name" name="name" autocomplete="name" maxlength="120" data-i18n-placeholder="contato.form.name_ph" placeholder={C.form.name_ph.pt} />
@@ -99,10 +100,10 @@ const sitekey = import.meta.env.PUBLIC_HCAPTCHA_SITE_KEY || '';
         </div>
         <h2 id="ct-done-title" tabindex="-1" data-i18n="contato.done.title">{C.done.title.pt}</h2>
         <p id="ct-done-text"></p>
-        <div class="ct-book">
+        <div id="ct-book" class="ct-book">
           <strong data-i18n="contato.done.book_title">{C.done.book_title.pt}</strong>
           <p data-i18n="contato.done.book_text">{C.done.book_text.pt}</p>
-          <a href={LINKS.pages.agendar} class="btn btn-primary" data-i18n="contato.done.book_cta">{C.done.book_cta.pt}</a>
+          <a id="ct-book-link" href={LINKS.pages.agendar} class="btn btn-primary" data-i18n="contato.done.book_cta">{C.done.book_cta.pt}</a>
         </div>
       </div>
 
@@ -114,7 +115,7 @@ const sitekey = import.meta.env.PUBLIC_HCAPTCHA_SITE_KEY || '';
 <script>
   import translations from '../../data/translations.json';
   import { HEADCOUNT, BUDGET, DEADLINE, STEPS, captureBody, submit, validProject, validName, normalizePhone, validEmail } from '../../lib/contato/form.mjs';
-  import { fill } from '../../lib/agenda/page.mjs';
+  import { fill, newRef, saveHandoff, readHandoff } from '../../lib/agenda/page.mjs';
 
   type Lang = 'pt' | 'en';
   type Step = (typeof STEPS)[number];
@@ -145,7 +146,21 @@ const sitekey = import.meta.env.PUBLIC_HCAPTCHA_SITE_KEY || '';
     done: '' as string,
     errKey: '' as string,
   };
-  const ref = new URLSearchParams(location.search).get('ref') || '';
+  // F5: /agendar → /contato?ref=… after a booking: contact data is already known, so the
+  // last step only shows who is sending + the captcha. Otherwise a fresh ref is made here.
+  const urlRef = new URLSearchParams(location.search).get('ref') || '';
+  const handoff = readHandoff(sessionStorage, urlRef);
+  const booked = !!handoff?.booked;
+  const ref = handoff ? urlRef : newRef();
+  if (handoff) {
+    $<HTMLInputElement>('ct-name').value = handoff.name || '';
+    $<HTMLInputElement>('ct-phone').value = handoff.phone || '';
+    $<HTMLInputElement>('ct-email').value = handoff.email || '';
+  }
+  if (booked) {
+    for (const el of form.querySelectorAll<HTMLElement>('.ct-step[data-step="contact"] .ct-field')) el.hidden = true;
+    $('ct-as').hidden = false;
+  }
 
   const stepEl = (s: Step) => form.querySelector<HTMLElement>(`.ct-step[data-step="${s}"]`)!;
   const chosen = (key: string) => {
@@ -212,7 +227,12 @@ const sitekey = import.meta.env.PUBLIC_HCAPTCHA_SITE_KEY || '';
     url.searchParams.set('text', t('wa_text'));
     wa.href = url.toString();
     wa.textContent = t('done.wa');
-    if (done) $('ct-done-text').textContent = t('done.text', { nome: state.done.split(' ')[0] });
+    if (booked) $('ct-as').textContent = t('form.as', { nome: handoff!.name || '', fone: handoff!.phone || '' });
+    if (done) {
+      $('ct-done-text').textContent = t(booked ? 'done.attached' : 'done.text', { nome: state.done.split(' ')[0] });
+      $('ct-book').hidden = booked;
+      $<HTMLAnchorElement>('ct-book-link').href = `/agendar?ref=${ref}`;
+    }
   }
 
   function go(step: number) {
@@ -283,6 +303,12 @@ const sitekey = import.meta.env.PUBLIC_HCAPTCHA_SITE_KEY || '';
     state.sending = false;
     if (result === 'sent') {
       state.done = name.trim();
+      saveHandoff(sessionStorage, {
+        ref, booked, name: name.trim(),
+        phone: $<HTMLInputElement>('ct-phone').value,
+        email: $<HTMLInputElement>('ct-email').value,
+        briefing: { projeto: body.project_type.slice(0, 200), porte: body.headcount, orcamento: body.budget, prazo: body.deadline },
+      });
       render();
       return $('ct-done-title').focus();
     }
@@ -457,6 +483,14 @@ const sitekey = import.meta.env.PUBLIC_HCAPTCHA_SITE_KEY || '';
   .ct-form-err { margin: 0; }
 
   .ct-captcha { min-height: 78px; }
+
+  .ct-as {
+    margin: 0;
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius-md);
+    background: var(--color-accent-glow);
+    font-weight: 500;
+  }
 
   .ct-notice {
     margin: 0;

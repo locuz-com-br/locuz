@@ -329,7 +329,13 @@
     },
     "done": {
       "title": { "pt": "Agendado!", "en": "You're booked!" },
-      "text": { "pt": "Até {quando}, {nome}. O link do Google Meet:", "en": "See you {quando}, {nome}. Your Google Meet link:" },
+      "text": { "pt": "Até {quando}, {nome}. Vai ser pelo Google Meet.", "en": "See you {quando}, {nome}. We'll meet on Google Meet." },
+      "copy": { "pt": "Copiar link", "en": "Copy link" },
+      "copied": { "pt": "Link copiado", "en": "Link copied" },
+      "join": { "pt": "Entrar no bate-papo", "en": "Join the call" },
+      "brief_title": { "pt": "Quer aproveitar melhor os 15 minutos?", "en": "Want to make the most of the 15 minutes?" },
+      "brief_text": { "pt": "Conte sobre o projeto em 1 minuto e a conversa já começa no ponto certo.", "en": "Tell us about the project in a minute, so the call starts in the right place." },
+      "brief_cta": { "pt": "Conte sobre o projeto", "en": "Tell us about the project" },
       "no_meet": { "pt": "Vamos te mandar o link do Google Meet pelo WhatsApp.", "en": "We'll send you the Google Meet link on WhatsApp." },
       "wa": { "pt": "Falar no WhatsApp", "en": "Message us on WhatsApp" }
     },
@@ -375,6 +381,7 @@
       "email": { "pt": "E-mail (opcional)", "en": "E-mail (optional)" },
       "email_ph": { "pt": "voce@empresa.com.br", "en": "you@company.com" },
       "submit": { "pt": "Enviar projeto", "en": "Send project" },
+      "as": { "pt": "Enviando como {nome} · {fone}", "en": "Sending as {nome} · {fone}" },
       "sending": { "pt": "Enviando…", "en": "Sending…" },
       "notice": { "pt": "Ao enviar, você concorda com a nossa", "en": "By sending, you agree to our" },
       "privacy": { "pt": "política de privacidade", "en": "privacy policy" },
@@ -396,6 +403,7 @@
       "book_title": { "pt": "Quer adiantar?", "en": "Want to get ahead?" },
       "book_text": { "pt": "Escolha um horário para um bate-papo de 15 minutos pelo Google Meet.", "en": "Pick a time for a 15-minute call on Google Meet." },
       "book_cta": { "pt": "Agendar bate-papo", "en": "Book a call" },
+      "attached": { "pt": "Obrigado, {nome}. Anexamos ao seu bate-papo: a conversa já começa no ponto certo.", "en": "Thanks, {nome}. We've attached it to your call, so it starts in the right place." },
       "wa": { "pt": "Falar no WhatsApp", "en": "Message us on WhatsApp" }
     },
     "wa_text": { "pt": "Olá! Tentei enviar meu projeto pelo site da Locuz e não consegui.", "en": "Hi! I tried to send my project through the Locuz website and it didn't work." }

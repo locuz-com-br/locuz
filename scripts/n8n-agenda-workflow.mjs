@@ -140,6 +140,7 @@ const linhas = [
   meet ? \`🎥 \${meet}\` : '⚠️ Sem link do Meet: confira o evento na agenda.',
   e.ref ? \`🔗 ref \${e.ref}\` : '',
   ...Object.entries(b).slice(0, 8).map(([k, v]) => \`• \${k}: \${String(v).slice(0, 200)}\`),
+  b.orcamento ? '' : '📝 Briefing: ainda não (o link para /contato está na tela de confirmação)',
 ].filter(Boolean);
 return [{ json: { texto: linhas.join('\\n'), adminPhone: String($env.PSIATIVA_ADMIN_PHONE || ''), ch: String($env.ZAPI_INSTANCE_ID || ''), meet } }];`),
   pg("Registrar aviso (Inbox PsiAtiva)",
