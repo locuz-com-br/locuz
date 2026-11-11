@@ -1,0 +1,12 @@
+---
+// /contato (Sprint 1 F4). Ships dark: noindex and linked from no CTA until F6.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Contato from '../components/sections/Contato.astro';
+import translations from '../data/translations.json';
+
+const meta = translations.contato.meta;
+---
+
+<BaseLayout title={meta.title.pt} description={meta.description.pt} noindex={true}>
+  <Contato />
+</BaseLayout>

@@ -7,7 +7,7 @@
     "deploy": "node scripts/deploy-ftp.mjs --publish",
     "deploy:prune": "node scripts/deploy-ftp.mjs --publish --prune",
     "deploy:status": "node scripts/deploy-ftp.mjs --verify",
-    "test:agenda": "node --test src/lib/agenda/*.test.mjs scripts/n8n-agenda-workflow.test.mjs"
+    "test:agenda": "node --test src/lib/agenda/*.test.mjs src/lib/contato/*.test.mjs scripts/n8n-agenda-workflow.test.mjs"
   },
   "dependencies": {
     "@astrojs/mdx": "^5.0.2",

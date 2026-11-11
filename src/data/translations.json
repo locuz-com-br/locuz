@@ -346,5 +346,58 @@
       "indisponivel": { "pt": "O agendamento não respondeu. Fale com a gente pelo WhatsApp.", "en": "Booking didn't respond. Please message us on WhatsApp." },
       "rede": { "pt": "Sem conexão. Confira a internet e tente de novo.", "en": "No connection. Check your internet and try again." }
     }
+  },
+
+  "contato": {
+    "meta": {
+      "title": { "pt": "Comece um projeto | Locuz", "en": "Start a project | Locuz" },
+      "description": { "pt": "Conte sobre o seu projeto em 1 minuto. A Locuz responde pelo WhatsApp.", "en": "Tell us about your project in a minute. Locuz replies on WhatsApp." }
+    },
+    "label": { "pt": "Comece um projeto", "en": "Start a project" },
+    "title": { "pt": "Conte sobre o seu projeto", "en": "Tell us about your project" },
+    "lead": { "pt": "Cinco perguntas rápidas. Com elas, a primeira conversa já começa no ponto certo.", "en": "Five quick questions, so the first conversation starts in the right place." },
+    "progress": { "pt": "Passo {n} de {total}", "en": "Step {n} of {total}" },
+    "back": { "pt": "Voltar", "en": "Back" },
+    "next": { "pt": "Continuar", "en": "Continue" },
+    "q": {
+      "project": { "pt": "O que você precisa?", "en": "What do you need?" },
+      "project_ph": { "pt": "Ex.: refazer o site, atrair mais clientes pelo Google, organizar o atendimento no WhatsApp…", "en": "E.g. rebuild the website, get more clients from Google, organise WhatsApp support…" },
+      "headcount": { "pt": "Quantas pessoas trabalham na empresa?", "en": "How many people work at the company?" },
+      "budget": { "pt": "Quanto você pretende investir?", "en": "How much do you plan to invest?" },
+      "deadline": { "pt": "Para quando você precisa?", "en": "When do you need it?" },
+      "contact": { "pt": "Para onde mandamos a resposta?", "en": "Where should we send our reply?" }
+    },
+    "form": {
+      "name": { "pt": "Nome", "en": "Name" },
+      "name_ph": { "pt": "Seu nome", "en": "Your name" },
+      "phone": { "pt": "WhatsApp", "en": "WhatsApp" },
+      "phone_hint": { "pt": "Com DDD. É por lá que respondemos.", "en": "Brazilian number with area code. We reply there." },
+      "email": { "pt": "E-mail (opcional)", "en": "E-mail (optional)" },
+      "email_ph": { "pt": "voce@empresa.com.br", "en": "you@company.com" },
+      "submit": { "pt": "Enviar projeto", "en": "Send project" },
+      "sending": { "pt": "Enviando…", "en": "Sending…" },
+      "notice": { "pt": "Ao enviar, você concorda com a nossa", "en": "By sending, you agree to our" },
+      "privacy": { "pt": "política de privacidade", "en": "privacy policy" },
+      "err_project": { "pt": "Conte em poucas palavras o que você precisa.", "en": "Tell us in a few words what you need." },
+      "err_choice": { "pt": "Escolha uma opção.", "en": "Pick an option." },
+      "err_name": { "pt": "Digite seu nome.", "en": "Enter your name." },
+      "err_phone": { "pt": "Digite um WhatsApp com DDD.", "en": "Enter a WhatsApp number with area code." },
+      "err_email": { "pt": "Confira o e-mail ou deixe em branco.", "en": "Check the e-mail or leave it blank." },
+      "err_captcha": { "pt": "Confirme que você não é um robô.", "en": "Confirm you are not a robot." }
+    },
+    "st": {
+      "invalido": { "pt": "Algum dado não passou. Confira e tente de novo.", "en": "Something didn't go through. Check your details and try again." },
+      "captcha": { "pt": "A verificação expirou. Confirme de novo e reenvie.", "en": "The check expired. Confirm again and resend." },
+      "erro": { "pt": "Não conseguimos enviar agora. Tente de novo ou fale direto no WhatsApp.", "en": "We couldn't send it right now. Try again or message us on WhatsApp." }
+    },
+    "done": {
+      "title": { "pt": "Projeto recebido", "en": "Project received" },
+      "text": { "pt": "Obrigado, {nome}. Respondemos pelo WhatsApp em até 1 dia útil.", "en": "Thanks, {nome}. We'll reply on WhatsApp within 1 business day." },
+      "book_title": { "pt": "Quer adiantar?", "en": "Want to get ahead?" },
+      "book_text": { "pt": "Escolha um horário para um bate-papo de 15 minutos pelo Google Meet.", "en": "Pick a time for a 15-minute call on Google Meet." },
+      "book_cta": { "pt": "Agendar bate-papo", "en": "Book a call" },
+      "wa": { "pt": "Falar no WhatsApp", "en": "Message us on WhatsApp" }
+    },
+    "wa_text": { "pt": "Olá! Tentei enviar meu projeto pelo site da Locuz e não consegui.", "en": "Hi! I tried to send my project through the Locuz website and it didn't work." }
   }
 }

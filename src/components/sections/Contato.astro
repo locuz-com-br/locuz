@@ -1,0 +1,517 @@
+---
+// /contato (Sprint 1 F4): project → headcount → budget → deadline → contact → done,
+// posted to the n8n webhook "Locuz — Captura de Leads" (source contact_page) with the
+// Web3Forms fallback of lead-capture/CONTEXT.md §5. Visual language shared with /agendar.
+import LINKS from '../../constants/links';
+import translations from '../../data/translations.json';
+import { HEADCOUNT, BUDGET, DEADLINE, STEPS } from '../../lib/contato/form.mjs';
+
+const C = translations.contato;
+const choices = { headcount: HEADCOUNT, budget: BUDGET, deadline: DEADLINE } as const;
+const endpoint = import.meta.env.PUBLIC_N8N_CAPTURE_WEBHOOK || '';
+const web3forms = import.meta.env.PUBLIC_WEB3FORMS_ACCESS_KEY || '';
+const sitekey = import.meta.env.PUBLIC_HCAPTCHA_SITE_KEY || '';
+---
+
+<section class="contato section">
+  <div class="container">
+    <div
+      id="ct"
+      class="ct-card glass-card"
+      data-step="project"
+      data-endpoint={endpoint}
+      data-web3forms={web3forms}
+      data-sitekey={sitekey}
+      data-wa={LINKS.socials.whatsapp}
+    >
+      <header class="ct-head">
+        <span class="section-label" data-i18n="contato.label">{C.label.pt}</span>
+        <h1 id="ct-title" tabindex="-1" data-i18n="contato.title">{C.title.pt}</h1>
+        <p class="ct-lead" data-i18n="contato.lead">{C.lead.pt}</p>
+      </header>
+
+      <form id="ct-form" class="ct-form" novalidate>
+        <div class="ct-progress-row">
+          <p id="ct-progress" class="ct-progress"></p>
+          <div class="ct-bar" aria-hidden="true"><span id="ct-bar-fill"></span></div>
+        </div>
+
+        <fieldset class="ct-step" data-step="project">
+          <legend class="ct-q" tabindex="-1">
+            <label for="ct-project" data-i18n="contato.q.project">{C.q.project.pt}</label>
+          </legend>
+          <textarea id="ct-project" name="project" rows="4" maxlength="2000" data-i18n-placeholder="contato.q.project_ph" placeholder={C.q.project_ph.pt}></textarea>
+          <small id="ct-project-err" class="ct-err" hidden></small>
+        </fieldset>
+
+        {(['headcount', 'budget', 'deadline'] as const).map((key) => (
+          <fieldset class="ct-step" data-step={key} hidden>
+            <legend class="ct-q" tabindex="-1" data-i18n={`contato.q.${key}`}>{C.q[key].pt}</legend>
+            <div class={`ct-options ct-options-${key}`}>
+              {choices[key].map((opt, i) => (
+                <label class="ct-option">
+                  <input type="radio" name={key} value={i} />
+                  <span data-opt={key} data-i={i}>{opt.pt}</span>
+                </label>
+              ))}
+            </div>
+            <small id={`ct-${key}-err`} class="ct-err" hidden></small>
+          </fieldset>
+        ))}
+
+        <fieldset class="ct-step" data-step="contact" hidden>
+          <legend class="ct-q" tabindex="-1" data-i18n="contato.q.contact">{C.q.contact.pt}</legend>
+          <label class="ct-field">
+            <span data-i18n="contato.form.name">{C.form.name.pt}</span>
+            <input id="ct-name" name="name" autocomplete="name" maxlength="120" data-i18n-placeholder="contato.form.name_ph" placeholder={C.form.name_ph.pt} />
+            <small id="ct-name-err" class="ct-err" hidden></small>
+          </label>
+          <label class="ct-field">
+            <span data-i18n="contato.form.phone">{C.form.phone.pt}</span>
+            <input id="ct-phone" name="phone" type="tel" autocomplete="tel-national" inputmode="tel" maxlength="20" placeholder="(21) 99999-9999" />
+            <small class="ct-hint" data-i18n="contato.form.phone_hint">{C.form.phone_hint.pt}</small>
+            <small id="ct-phone-err" class="ct-err" hidden></small>
+          </label>
+          <label class="ct-field">
+            <span data-i18n="contato.form.email">{C.form.email.pt}</span>
+            <input id="ct-email" name="email" type="email" autocomplete="email" inputmode="email" maxlength="160" spellcheck="false" autocapitalize="off" data-i18n-placeholder="contato.form.email_ph" placeholder={C.form.email_ph.pt} />
+            <small id="ct-email-err" class="ct-err" hidden></small>
+          </label>
+          <div id="ct-captcha" class="ct-captcha"></div>
+          <small id="ct-captcha-err" class="ct-err" hidden></small>
+          <p class="ct-notice">
+            <span data-i18n="contato.form.notice">{C.form.notice.pt}</span>
+            <a href={LINKS.legal.privacy} data-i18n="contato.form.privacy">{C.form.privacy.pt}</a>.
+          </p>
+        </fieldset>
+
+        <p id="ct-form-err" class="ct-form-err" role="alert" hidden></p>
+
+        <div class="ct-actions">
+          <button type="button" id="ct-back" class="btn btn-outline ct-back" data-i18n="contato.back">{C.back.pt}</button>
+          <button type="submit" id="ct-next" class="btn btn-primary ct-next">{C.next.pt}</button>
+        </div>
+      </form>
+
+      <div id="ct-done" class="ct-done" hidden>
+        <div class="ct-done-icon" aria-hidden="true">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+        </div>
+        <h2 id="ct-done-title" tabindex="-1" data-i18n="contato.done.title">{C.done.title.pt}</h2>
+        <p id="ct-done-text"></p>
+        <div class="ct-book">
+          <strong data-i18n="contato.done.book_title">{C.done.book_title.pt}</strong>
+          <p data-i18n="contato.done.book_text">{C.done.book_text.pt}</p>
+          <a href={LINKS.pages.agendar} class="btn btn-primary" data-i18n="contato.done.book_cta">{C.done.book_cta.pt}</a>
+        </div>
+      </div>
+
+      <a id="ct-wa" class="btn btn-outline ct-wa" target="_blank" rel="noopener" hidden data-i18n="contato.done.wa">{C.done.wa.pt}</a>
+    </div>
+  </div>
+</section>
+
+<script>
+  import translations from '../../data/translations.json';
+  import { HEADCOUNT, BUDGET, DEADLINE, STEPS, captureBody, submit, validProject, validName, normalizePhone, validEmail } from '../../lib/contato/form.mjs';
+  import { fill } from '../../lib/agenda/page.mjs';
+
+  type Lang = 'pt' | 'en';
+  type Step = (typeof STEPS)[number];
+  const C: any = translations.contato;
+  const LISTS: Record<string, { pt: string; en: string }[]> = { headcount: HEADCOUNT, budget: BUDGET, deadline: DEADLINE };
+  const root = document.getElementById('ct')!;
+  const form = document.getElementById('ct-form') as HTMLFormElement;
+  const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
+  const { endpoint = '', web3forms = '', sitekey = '', wa: waBase = '' } = root.dataset;
+
+  const lang = (): Lang => {
+    try {
+      const saved = localStorage.getItem('locuz-lang');
+      if (saved === 'pt' || saved === 'en') return saved;
+    } catch { /* storage blocked */ }
+    return (navigator.language || '').toLowerCase().startsWith('pt') ? 'pt' : 'en';
+  };
+  const t = (path: string, vars?: Record<string, string>) => {
+    const entry = path.split('.').reduce((acc: any, k) => acc?.[k], C);
+    return fill(entry?.[lang()] ?? path, vars);
+  };
+
+  const state = {
+    step: 0,
+    sending: false,
+    token: '' as string,
+    widget: null as null | string,
+    done: '' as string,
+    errKey: '' as string,
+  };
+  const ref = new URLSearchParams(location.search).get('ref') || '';
+
+  const stepEl = (s: Step) => form.querySelector<HTMLElement>(`.ct-step[data-step="${s}"]`)!;
+  const chosen = (key: string) => {
+    const el = form.querySelector<HTMLInputElement>(`input[name="${key}"]:checked`);
+    return el ? Number(el.value) : undefined;
+  };
+
+  function fieldError(id: string, key: string | null) {
+    const el = $(id);
+    el.hidden = !key;
+    el.textContent = key ? t(key) : '';
+    el.parentElement?.querySelector('input, textarea')?.setAttribute('aria-invalid', String(!!key));
+  }
+
+  // hCaptcha loads only when the contact step opens, in the visitor's language.
+  function mountCaptcha() {
+    if (!sitekey || state.widget !== null) return;
+    const w = window as any;
+    const render = () => {
+      state.widget = w.hcaptcha.render('ct-captcha', {
+        sitekey,
+        callback: (tok: string) => { state.token = tok; fieldError('ct-captcha-err', null); },
+        'expired-callback': () => { state.token = ''; },
+      });
+    };
+    if (w.hcaptcha) return render();
+    w.__ctCaptchaReady = render;
+    const s = document.createElement('script');
+    s.src = `https://js.hcaptcha.com/1/api.js?render=explicit&onload=__ctCaptchaReady&hl=${lang() === 'pt' ? 'pt-BR' : 'en'}`;
+    s.async = true;
+    document.head.append(s);
+  }
+
+  function resetCaptcha() {
+    state.token = '';
+    const w = window as any;
+    if (state.widget !== null && w.hcaptcha) w.hcaptcha.reset(state.widget);
+  }
+
+  function render() {
+    const L = lang();
+    const current = STEPS[state.step];
+    const done = !!state.done;
+    form.hidden = done;
+    $('ct-done').hidden = !done;
+    (root.querySelector('.ct-lead') as HTMLElement).hidden = done;
+    root.dataset.step = done ? 'done' : current;
+    for (const s of STEPS) stepEl(s).hidden = s !== current;
+    $('ct-progress').textContent = t('progress', { n: String(state.step + 1), total: String(STEPS.length) });
+    $('ct-bar-fill').style.width = `${((state.step + 1) / STEPS.length) * 100}%`;
+    $('ct-back').hidden = state.step === 0;
+    const last = current === 'contact';
+    $('ct-next').textContent = last ? t(state.sending ? 'form.sending' : 'form.submit') : t('next');
+    ($('ct-next') as HTMLButtonElement).disabled = state.sending;
+    for (const span of form.querySelectorAll<HTMLElement>('[data-opt]')) {
+      span.textContent = LISTS[span.dataset.opt!][Number(span.dataset.i)][L];
+    }
+    const err = $('ct-form-err');
+    err.hidden = !state.errKey;
+    err.textContent = state.errKey ? t(`st.${state.errKey}`) : '';
+    const wa = $<HTMLAnchorElement>('ct-wa');
+    wa.hidden = state.errKey !== 'erro';
+    const url = new URL(waBase);
+    url.searchParams.set('text', t('wa_text'));
+    wa.href = url.toString();
+    wa.textContent = t('done.wa');
+    if (done) $('ct-done-text').textContent = t('done.text', { nome: state.done.split(' ')[0] });
+  }
+
+  function go(step: number) {
+    state.step = step;
+    state.errKey = '';
+    render();
+    if (STEPS[step] === 'contact') mountCaptcha();
+    const s = stepEl(STEPS[step]);
+    (s.querySelector<HTMLElement>('textarea, input:checked, input') || s.querySelector<HTMLElement>('legend'))?.focus();
+  }
+
+  /** Validate the visible step; returns true when it may advance. */
+  function check(step: Step): boolean {
+    if (step === 'project') {
+      const ok = validProject($<HTMLTextAreaElement>('ct-project').value);
+      fieldError('ct-project-err', ok ? null : 'form.err_project');
+      return ok;
+    }
+    if (step !== 'contact') {
+      const ok = chosen(step) !== undefined;
+      fieldError(`ct-${step}-err`, ok ? null : 'form.err_choice');
+      return ok;
+    }
+    const errors: [string, string | null][] = [
+      ['ct-name-err', validName($<HTMLInputElement>('ct-name').value) ? null : 'form.err_name'],
+      ['ct-phone-err', normalizePhone($<HTMLInputElement>('ct-phone').value) ? null : 'form.err_phone'],
+      ['ct-email-err', validEmail($<HTMLInputElement>('ct-email').value) ? null : 'form.err_email'],
+      ['ct-captcha-err', !sitekey || state.token ? null : 'form.err_captcha'],
+    ];
+    for (const [id, key] of errors) fieldError(id, key);
+    const bad = errors.find(([, key]) => key);
+    if (bad) $(bad[0]).parentElement?.querySelector<HTMLElement>('input')?.focus();
+    return !bad;
+  }
+
+  // A choice advances on its own: one tap per question on a phone.
+  form.addEventListener('change', (event) => {
+    const input = event.target as HTMLInputElement;
+    if (input.type !== 'radio') return;
+    fieldError(`ct-${input.name}-err`, null);
+    setTimeout(() => { if (STEPS[state.step] === input.name) go(state.step + 1); }, 180);
+  });
+
+  $('ct-back').addEventListener('click', () => go(Math.max(0, state.step - 1)));
+
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const current = STEPS[state.step];
+    if (state.sending || !check(current)) return;
+    if (current !== 'contact') return go(state.step + 1);
+
+    const name = $<HTMLInputElement>('ct-name').value;
+    const body = captureBody({
+      project: $<HTMLTextAreaElement>('ct-project').value,
+      headcount: chosen('headcount'),
+      budget: chosen('budget'),
+      deadline: chosen('deadline'),
+      name,
+      phone: $<HTMLInputElement>('ct-phone').value,
+      email: $<HTMLInputElement>('ct-email').value,
+      token: state.token,
+      ref,
+    });
+    state.sending = true;
+    state.errKey = '';
+    render();
+    const result = await submit(body, { endpoint, web3formsKey: web3forms });
+    state.sending = false;
+    if (result === 'sent') {
+      state.done = name.trim();
+      render();
+      return $('ct-done-title').focus();
+    }
+    if (result === 'captcha') resetCaptcha();
+    state.errKey = result;
+    render();
+  });
+
+  // The site's i18n toggle rewrites [data-i18n]; the dynamic parts are re-rendered here.
+  for (const id of ['lang-toggle', 'lang-toggle-mobile']) {
+    document.getElementById(id)?.addEventListener('click', () => setTimeout(render, 0));
+  }
+
+  render();
+</script>
+
+<!-- Global, like /agendar: every selector is prefixed .ct- / .contato. -->
+<style is:global>
+  .contato {
+    padding-top: calc(var(--section-padding) + 3rem);
+    min-height: 100vh;
+  }
+
+  .ct-card {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: clamp(1.5rem, 4vw, 2.5rem);
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .ct-head h1 {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 5vw, 2.75rem);
+    line-height: 1.1;
+    margin: 0.5rem 0 0.75rem;
+    outline: none;
+  }
+
+  .ct-lead {
+    color: var(--color-text-secondary);
+    margin: 0;
+  }
+
+  .ct-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .ct-progress-row { display: flex; flex-direction: column; gap: 0.5rem; }
+
+  .ct-progress {
+    margin: 0;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-text-muted);
+  }
+
+  .ct-bar {
+    height: 4px;
+    border-radius: var(--radius-full);
+    background: var(--color-border);
+    overflow: hidden;
+  }
+
+  .ct-bar span {
+    display: block;
+    height: 100%;
+    background: var(--color-accent);
+    transition: width var(--transition-fast);
+  }
+
+  .ct-step {
+    border: 0;
+    margin: 0;
+    padding: 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .ct-q {
+    font-family: var(--font-subtitle);
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0 0 0.25rem;
+    padding: 0;
+    outline: none;
+  }
+
+  .ct-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
+    gap: 0.5rem;
+  }
+
+  .ct-options-deadline { grid-template-columns: 1fr; }
+
+  .ct-option { position: relative; display: flex; }
+
+  .ct-option input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .ct-option span {
+    flex: 1;
+    padding: 0.8rem 0.9rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border-hover);
+    background: var(--color-bg-card);
+    color: var(--color-text);
+    font: 500 0.95rem var(--font-body);
+    line-height: 1.35;
+    cursor: pointer;
+    transition: border-color var(--transition-fast), background var(--transition-fast);
+  }
+
+  .ct-option span:hover { border-color: var(--color-accent); background: var(--color-accent-glow); }
+
+  .ct-option input:checked + span {
+    border-color: var(--color-accent);
+    background: var(--color-accent);
+    color: #fff;
+  }
+
+  .ct-option input:focus-visible + span {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  .ct-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+
+  .ct-field input,
+  .ct-step textarea {
+    padding: 0.75rem 0.9rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border-hover);
+    background: var(--color-bg-card);
+    color: var(--color-text);
+    font: 400 1rem var(--font-body);
+  }
+
+  .ct-step textarea { resize: vertical; min-height: 7rem; }
+
+  .ct-field input:focus,
+  .ct-step textarea:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px var(--color-accent-glow);
+  }
+
+  .ct-field input[aria-invalid="true"],
+  .ct-step textarea[aria-invalid="true"] { border-color: #c2410c; }
+
+  .ct-hint { color: var(--color-text-muted); font-weight: 400; }
+
+  .ct-err,
+  .ct-form-err { color: #c2410c; font-weight: 500; }
+
+  .ct-form-err { margin: 0; }
+
+  .ct-captcha { min-height: 78px; }
+
+  .ct-notice {
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+  }
+
+  .ct-notice a { color: inherit; text-decoration: underline; }
+
+  .ct-actions {
+    display: flex;
+    gap: 0.75rem;
+  }
+
+  .ct-next { flex: 1; justify-content: center; }
+  .ct-next:disabled { opacity: 0.6; }
+
+  .ct-done { text-align: center; }
+
+  .ct-done-icon {
+    width: 3.5rem;
+    height: 3.5rem;
+    margin: 0 auto 1rem;
+    display: grid;
+    place-items: center;
+    border-radius: var(--radius-full);
+    background: var(--color-accent);
+    color: #fff;
+  }
+
+  .ct-done h2 {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    margin: 0 0 0.5rem;
+    outline: none;
+  }
+
+  .ct-done > p { color: var(--color-text-secondary); margin: 0 0 1.5rem; }
+
+  .ct-book {
+    padding: 1.25rem;
+    border-radius: var(--radius-md);
+    background: var(--color-accent-glow);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .ct-book p { margin: 0 0 0.5rem; color: var(--color-text-secondary); }
+
+  .ct-wa { align-self: center; }
+
+  @media (max-width: 480px) {
+    .ct-options { grid-template-columns: 1fr 1fr; }
+    .ct-options-deadline { grid-template-columns: 1fr; }
+  }
+</style>

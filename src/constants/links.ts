@@ -8,6 +8,7 @@
 export const PAGES = {
   home: "/",
   agendar: "/agendar",
+  contato: "/contato",
 } as const;
 
 // ── Section Anchors ──────────────────────────
